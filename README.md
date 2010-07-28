@@ -13,8 +13,7 @@ or possibly:
 
     C:\Documents and Settings\<User>\Application Data\<AppAuthor>\<AppName>
 
-for [roaming profiles](http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx) but
-that is another story.
+for [roaming profiles](http://bit.ly/9yl3b6) but that is another story.
 
 On Linux (and other Unices) the dir is typically:
 
