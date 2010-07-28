@@ -3,7 +3,7 @@
 
 """Utilities for determining application-specific dirs.
 
-See <http://github.com/ActiveState/appdirs> for details.
+See <http://github.com/ActiveState/appdirs> for details and usage.
 """
 # Dev Notes:
 # - MSDN on where to store app data files:
@@ -23,7 +23,7 @@ class AppDirsError(Exception):
 
 
 
-def user_data_dir(appname, appauthor=None, version=None):
+def user_data_dir(appname, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
     
         "appname" is the name of application.
@@ -34,11 +34,20 @@ def user_data_dir(appname, appauthor=None, version=None):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+        "roaming" (boolean, default False) can be set True to use the Windows
+            roaming appdata directory. That means that for users on a Windows
+            network setup for roaming profiles, this user data will be
+            sync'd on login. See
+            <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
+            for a discussion of issues.
     
     Typical user data directories are:
-        Win XP:     C:\Documents and Settings\USER\Application Data\<AppAuthor>\<AppName>
-        Mac OS X:   ~/Library/Application Support/<AppName>
-        Unix:       ~/.<appname>
+        Mac OS X:               ~/Library/Application Support/<AppName>
+        Unix:                   ~/.<appname>
+        Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
+        Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+        Vista  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
+        Vista  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
     
     For Unix there is no *real* standard here. For example, Firefox uses:
     "~/.mozilla/firefox" which is a "~/.<appauthor>/<appname>"-type scheme.
@@ -46,8 +55,8 @@ def user_data_dir(appname, appauthor=None, version=None):
     if sys.platform.startswith("win"):
         if appauthor is None:
             raise AppDirsError("must specify 'appauthor' on Windows")
-        path = os.path.join(_get_win_folder("CSIDL_APPDATA"),
-                            appauthor, appname)
+        const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
+        path = os.path.join(_get_win_folder(const), appauthor, appname)
     elif sys.platform == 'darwin':
         if os.uname()[-1] == 'i386':
             # Folder.FSFindFolder() fails with error -43 on x86.
@@ -80,9 +89,13 @@ def site_data_dir(appname, appauthor=None, version=None):
             would typically be "<major>.<minor>".
     
     Typical user data directories are:
-        Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Mac OS X:   /Library/Application Support/<AppName>
         Unix:       /etc/<appname>
+        Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
+        Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
+        Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
+    
+    Warning: Do not use this on Windows. See the Vista-Fail note above for why.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -120,12 +133,19 @@ def user_cache_dir(appname, appauthor=None, version=None):
             would typically be "<major>.<minor>".
     
     Typical user cache directories are:
-        Win XP:     C:\Documents and Settings\USER\Local Settings\Application Data\<AppAuthor>\<AppName>
         Mac OS X:   ~/Library/Caches/<AppName>
         Unix:       ~/.<appname>/caches
+        Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
+        Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
 
-    For Unix there is no *real* standard here. Note that we are returning
-    the *same dir as the user_data_dir()* for Unix. Use accordingly.
+    For Unix there is no *real* standard here. This "caches" subdir is a
+    suggestion from me.
+    
+    On Windows, note that this is identical to the non-roaming `user_data_dir`.
+    Apps typically put cache data somewhere *under* the given dir here. Some
+    examples:
+        ...\Mozilla\Firefox\Profiles\<ProfileName>\Cache
+        ...\Acme\SuperApp\1.0\Caches
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
