@@ -2,6 +2,7 @@
 
 ## appdirs 1.1.0 (not yet released)
 
+- Change default `user_cache_dir()` on Linux to be singular, e.g. "~/.superapp/cache".
 - Add `roaming` option to `user_data_dir()` (for use on Windows only) and change
   the default `user_data_dir` behaviour to use a *non*-roaming profile dir
   (`CSIDL_LOCAL_APPDATA` instead of `CSIDL_APPDATA`). Why? Because a large

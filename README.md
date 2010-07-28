@@ -25,7 +25,7 @@ On Linux (and other Unices) the dir is typically:
 This kind of thing is what the `appdirs` module is for. `appdirs`:
 
 - will tell you an appropriate user data dir (`user_data_dir`)
-- will tell you an appropriate user caches dir (`user_caches_dir`)
+- will tell you an appropriate user cache dir (`user_cache_dir`)
 - will tell you an appropriate site data dir (`site_data_dir`)
 - is a single module so other Python packages can include their own private copy
 - is slightly opinionated on the directory names used (especially on Linux/Unix
@@ -56,11 +56,11 @@ On Windows 7:
     'C:\\Users\\trentm\\AppData\\Roaming\\Acme\\SuperApp'
     >>> user_cache_dir(appname, appauthor)
     'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
-    # Suggest at least "Caches" is appended to this to separate from
+    # Suggest at least "Cache" is appended to this to separate from
     # `user_data_dir`.
     >>> from os.path import join
-    >>> join(user_cache_dir(appname, appauthor), "Caches")
-    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Caches'
+    >>> join(user_cache_dir(appname, appauthor), "Cache")
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Cache'
 
 On Linux:
 
@@ -72,7 +72,7 @@ On Linux:
     >>> site_data_dir(appname, appauthor)
     '/etc/superapp'
     >>> user_cache_dir(appname, appauthor)
-    '/home/trentm/.superapp/caches'
+    '/home/trentm/.superapp/cache'
 
 
 # `AppDirs` for convenience
@@ -86,7 +86,7 @@ On Linux:
     >>> dirs.user_cache_dir
     '/Users/trentm/Library/Caches/SuperApp'
 
-Note that the `AppDirs` default on Windows is to append "Caches" to the
+Note that the `AppDirs` default on Windows is to append "Cache" to the
 `.user_cache_dir` as suggested above.
 
     

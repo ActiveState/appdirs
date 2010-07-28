@@ -139,11 +139,11 @@ def user_cache_dir(appname, appauthor=None, version=None):
     
     Typical user cache directories are:
         Mac OS X:   ~/Library/Caches/<AppName>
-        Unix:       ~/.<appname>/caches
+        Unix:       ~/.<appname>/cache
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
 
-    For Unix there is no *real* standard here. This "caches" subdir is a
+    For Unix there is no *real* standard here. This "cache" subdir is a
     suggestion from me.
     
     On Windows, note that this is identical to the non-roaming `user_data_dir`.
@@ -172,7 +172,7 @@ def user_cache_dir(appname, appauthor=None, version=None):
             basepath = path.FSRefMakePath()
         path = os.path.join(basepath, appname)
     else:
-        path = os.path.expanduser("~/.%s/caches" % appname.lower())
+        path = os.path.expanduser("~/.%s/cache" % appname.lower())
     if version:
         path = os.path.join(path, version)
     return path
