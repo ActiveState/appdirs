@@ -1,4 +1,4 @@
-# The Problem
+# the problem
 
 What directory should your app use for storing user data? If running on Mac OS X, you
 should use:
@@ -20,7 +20,7 @@ On Linux (and other Unices) the dir is typically:
     ~/.<appname>     # note AppName was lowercased
 
 
-# `appdirs`
+# `appdirs` to the rescue
 
 This kind of thing is what the `appdirs` module is for. `appdirs`:
 
@@ -31,6 +31,12 @@ This kind of thing is what the `appdirs` module is for. `appdirs`:
 - is slightly opinionated on the directory names used (especially on Linux/Unix
   where standards for these dirs don't really exist, AFAIK)
 
+# some example output
+
+
+
+
+# typical usage
 
 
 

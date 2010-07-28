@@ -1,0 +1,3 @@
+- fill out docs
+- complete the name change
+- add the AppDirs class for "typical usage"
