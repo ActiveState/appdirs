@@ -33,7 +33,46 @@ This kind of thing is what the `appdirs` module is for. `appdirs`:
 
 # some example output
 
+On Mac OS X:
 
+    >>> from appdirs import *
+    >>> appname = "SuperApp"
+    >>> appauthor = "Acme"
+    >>> user_data_dir(appname, appauthor)
+    '/Users/trentm/Library/Application Support/SuperApp'
+    >>> site_data_dir(appname, appauthor)
+    '/Library/Application Support/SuperApp'
+    >>> user_cache_dir(appname, appauthor)
+    '/Users/trentm/Library/Caches/SuperApp'
+
+On Windows 7:
+
+    >>> from appdirs import *
+    >>> appname = "SuperApp"
+    >>> appauthor = "Acme"
+    >>> user_data_dir(appname, appauthor)
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
+    >>> user_data_dir(appname, appauthor, roaming=True)
+    'C:\\Users\\trentm\\AppData\\Roaming\\Acme\\SuperApp'
+    >>> user_cache_dir(appname, appauthor)
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
+    # Suggest at least "Caches" is appended to this to separate from
+    # `user_data_dir`.
+    >>> from os.path import join
+    >>> join(user_cache_dir(appname, appauthor), "Caches")
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Caches'
+
+On Linux:
+
+    >>> from appdirs import *
+    >>> appname = "SuperApp"
+    >>> appauthor = "Acme"
+    >>> user_data_dir(appname, appauthor)
+    '/home/trentm/.superapp
+    >>> site_data_dir(appname, appauthor)
+    '/etc/superapp'
+    >>> user_cache_dir(appname, appauthor)
+    '/home/trentm/.superapp/caches'
 
 
 # typical usage
