@@ -36,9 +36,9 @@ def user_data_dir(appname, appauthor=None, version=None):
             would typically be "<major>.<minor>".
     
     Typical user data directories are:
-        Win XP:     C:\Documents and Settings\USER\Application Data\<appauthor>\<appname>
-        Mac OS X:   ~/Library/Application Support/<appname>
-        Unix:       ~/.<lowercased-appname>
+        Win XP:     C:\Documents and Settings\USER\Application Data\<AppAuthor>\<AppName>
+        Mac OS X:   ~/Library/Application Support/<AppName>
+        Unix:       ~/.<appname>
     
     For Unix there is no *real* standard here. For example, Firefox uses:
     "~/.mozilla/firefox" which is a "~/.<appauthor>/<appname>"-type scheme.
@@ -50,7 +50,8 @@ def user_data_dir(appname, appauthor=None, version=None):
                             appauthor, appname)
     elif sys.platform == 'darwin':
         if os.uname()[-1] == 'i386':
-            #XXX Folder.FSFindFolder() fails with error -43 on x86. See 42669.
+            # Folder.FSFindFolder() fails with error -43 on x86.
+            # See Komodo bug 42669.
             basepath = os.path.expanduser('~/Library/Application Support')
         else:
             from Carbon import Folder, Folders
@@ -79,9 +80,9 @@ def site_data_dir(appname, appauthor=None, version=None):
             would typically be "<major>.<minor>".
     
     Typical user data directories are:
-        Win XP:     C:\Documents and Settings\All Users\Application Data\<appauthor>\<appname>
-        Mac OS X:   /Library/Application Support/<appname>
-        Unix:       /etc/<lowercased-appname>
+        Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
+        Mac OS X:   /Library/Application Support/<AppName>
+        Unix:       /etc/<appname>
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -119,9 +120,9 @@ def user_cache_dir(appname, appauthor=None, version=None):
             would typically be "<major>.<minor>".
     
     Typical user cache directories are:
-        Win XP:     C:\Documents and Settings\USER\Local Settings\Application Data\<appauthor>\<appname>
-        Mac OS X:   ~/Library/Caches/<appname>
-        Unix:       ~/.<lowercased-appname>/caches
+        Win XP:     C:\Documents and Settings\USER\Local Settings\Application Data\<AppAuthor>\<AppName>
+        Mac OS X:   ~/Library/Caches/<AppName>
+        Unix:       ~/.<appname>/caches
 
     For Unix there is no *real* standard here. Note that we are returning
     the *same dir as the user_data_dir()* for Unix. Use accordingly.
@@ -133,7 +134,8 @@ def user_cache_dir(appname, appauthor=None, version=None):
                             appauthor, appname)
     elif sys.platform == 'darwin':
         if os.uname()[-1] == 'i386':
-            #XXX Folder.FSFindFolder() fails with error -43 on x86. See 42669.
+            # Folder.FSFindFolder() fails with error -43 on x86.
+            # See Komodo bug 42669.
             basepath = os.path.expanduser('~/Library/Caches')
         else:
             from Carbon import Folder, Folders
