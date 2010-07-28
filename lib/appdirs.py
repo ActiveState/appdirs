@@ -150,7 +150,7 @@ def user_cache_dir(appname, appauthor=None, version=None):
     Apps typically put cache data somewhere *under* the given dir here. Some
     examples:
         ...\Mozilla\Firefox\Profiles\<ProfileName>\Cache
-        ...\Acme\SuperApp\1.0\Caches
+        ...\Acme\SuperApp\1.0\Cache
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -209,6 +209,20 @@ def _get_win_folder_with_pywin32(csidl_name):
     # path.
     try:
         dir = unicode(dir)
+        
+        # Downgrade to short path name if have highbit chars. See
+        # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
+        has_high_char = False
+        for c in dir:
+            if ord(c) > 255:
+                has_high_char = True
+                break
+        if has_high_char:
+            try:
+                import win32api
+                dir = win32api.GetShortPathName(dir)
+            except ImportError:
+                pass    
     except UnicodeError:
         pass
     return dir
@@ -224,6 +238,19 @@ def _get_win_folder_with_ctypes(csidl_name):
     
     buf = ctypes.create_unicode_buffer(1024)
     ctypes.windll.shell32.SHGetFolderPathW(None, csidl_const, None, 0, buf)
+    
+    # Downgrade to short path name if have highbit chars. See
+    # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
+    has_high_char = False
+    for c in buf:
+        if ord(c) > 255:
+            has_high_char = True
+            break
+    if has_high_char:
+        buf2 = ctypes.create_unicode_buffer(1024)
+        if ctypes.windll.kernel32.GetShortPathNameW(buf.value, buf2, 1024):
+            buf = buf2
+    
     return buf.value
 
 if sys.platform == "win32":

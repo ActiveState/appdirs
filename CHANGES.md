@@ -2,6 +2,8 @@
 
 ## appdirs 1.1.0 (not yet released)
 
+- [Windows] Cherry-pick Komodo's change to downgrade paths to the Windows short
+  paths if there are high bit chars.
 - Change default `user_cache_dir()` on Linux to be singular, e.g. "~/.superapp/cache".
 - Add `roaming` option to `user_data_dir()` (for use on Windows only) and change
   the default `user_data_dir` behaviour to use a *non*-roaming profile dir
