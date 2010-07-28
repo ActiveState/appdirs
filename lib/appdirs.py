@@ -63,7 +63,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
             # on x86. See Komodo bug 42669.
             #TODO: Update this to try FSFindFolder and fallback to this
             #      hardcoding for the specific failure mode.
-            basepath = os.path.expanduser('/Library/Application Support')
+            basepath = os.path.expanduser('~/Library/Application Support')
         else:
             from Carbon import Folder, Folders
             path = Folder.FSFindFolder(Folders.kUserDomain,
@@ -106,8 +106,11 @@ def site_data_dir(appname, appauthor=None, version=None):
                             appauthor, appname)
     elif sys.platform == 'darwin':
         if os.uname()[-1] == 'i386':
-            #XXX Folder.FSFindFolder() fails with error -43 on x86. See 42669.
-            basepath = os.path.expanduser('~/Library/Application Support')
+            # Folder.FSFindFolder() **used to fail** with error -43
+            # on x86. See Komodo bug 42669.
+            #TODO: Update this to try FSFindFolder and fallback to this
+            #      hardcoding for the specific failure mode.
+            basepath = os.path.expanduser('/Library/Application Support')
         else:
             from Carbon import Folder, Folders
             path = Folder.FSFindFolder(Folders.kLocalDomain,
