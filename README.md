@@ -75,7 +75,29 @@ On Linux:
     '/home/trentm/.superapp/caches'
 
 
-# typical usage
+# `AppDirs` for convenience
 
+    >>> from appdirs import AppDirs
+    >>> dirs = AppDirs("SuperApp", "Acme")
+    >>> dirs.user_data_dir
+    '/Users/trentm/Library/Application Support/SuperApp'
+    >>> dirs.site_data_dir
+    '/Library/Application Support/SuperApp'
+    >>> dirs.user_cache_dir
+    '/Users/trentm/Library/Caches/SuperApp'
 
+Note that the `AppDirs` default on Windows is to append "Caches" to the
+`.user_cache_dir` as suggested above.
+
+    
+# Per-major-version isolation
+
+    >>> from appdirs import AppDirs
+    >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")
+    >>> dirs.user_data_dir
+    '/Users/trentm/Library/Application Support/SuperApp/1.0'
+    >>> dirs.site_data_dir
+    '/Library/Application Support/SuperApp/1.0'
+    >>> dirs.user_cache_dir
+    '/Users/trentm/Library/Caches/SuperApp/1.0'
 
