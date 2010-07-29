@@ -28,8 +28,9 @@ This kind of thing is what the `appdirs` module is for. `appdirs`:
 - will tell you an appropriate user cache dir (`user_cache_dir`)
 - will tell you an appropriate site data dir (`site_data_dir`)
 - is a single module so other Python packages can include their own private copy
-- is slightly opinionated on the directory names used (especially on Linux/Unix
-  where standards for these dirs don't really exist, AFAIK)
+- is slightly opinionated on the directory names used. Look for "OPINION" in
+  documentation and code for when an opinion is being applied.
+
 
 # some example output
 

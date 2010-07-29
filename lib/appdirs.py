@@ -10,7 +10,7 @@ See <http://github.com/ActiveState/appdirs> for details and usage.
 #   http://support.microsoft.com/default.aspx?scid=kb;en-us;310294#XSLTH3194121123120121120120
 # - Mac OS X: http://developer.apple.com/documentation/MacOSX/Conceptual/BPFileSystem/index.html
 
-__version_info__ = (1, 0, 1)
+__version_info__ = (1, 1, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
 
@@ -49,8 +49,10 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
         Vista  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
         Vista  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
     
-    For Unix there is no *real* standard here. For example, Firefox uses:
-    "~/.mozilla/firefox" which is a "~/.<appauthor>/<appname>"-type scheme.
+    OPINION: For Unix there is no *real* standard here. For example, Firefox
+    uses: "~/.mozilla/firefox" which is a "~/.<appauthor>/<appname>"-type
+    scheme. As well, if you only have a single config file for your app,
+    then something like "~/.pypirc" or "~/.hgrc" is fairly common.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -97,7 +99,7 @@ def site_data_dir(appname, appauthor=None, version=None):
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
     
-    Warning: Do not use this on Windows. See the Vista-Fail note above for why.
+    WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -125,7 +127,7 @@ def site_data_dir(appname, appauthor=None, version=None):
     return path
 
 
-def user_cache_dir(appname, appauthor=None, version=None):
+def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
     r"""Return full path to the user-specific cache dir for this application.
     
         "appname" is the name of application.
@@ -136,27 +138,35 @@ def user_cache_dir(appname, appauthor=None, version=None):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+        "opinion" (boolean) can be False to disable the appending of
+            "[cC]ache" to the base app data dirs for Unix and Windows. See
+            discussion below.
     
     Typical user cache directories are:
         Mac OS X:   ~/Library/Caches/<AppName>
         Unix:       ~/.<appname>/cache
-        Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
-        Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
+        Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Cache
+        Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Cache
 
-    For Unix there is no *real* standard here. This "cache" subdir is a
-    suggestion from me.
+    OPINION: For Unix there is no *real* standard here. This "cache" subdir is a
+    suggestion from me. This can be disabled with the `opinion=False` option.
     
-    On Windows, note that this is identical to the non-roaming `user_data_dir`.
-    Apps typically put cache data somewhere *under* the given dir here. Some
-    examples:
+    On Windows the only suggestion in the MSDN docs is that local settings go in
+    the `CSIDL_LOCAL_APPDATA` directory. This is identical to the non-roaming
+    app data dir (the default returned by `user_data_dir` above). Apps typically
+    put cache data somewhere *under* the given dir here. Some examples:
         ...\Mozilla\Firefox\Profiles\<ProfileName>\Cache
-        ...\Acme\SuperApp\1.0\Cache
+        ...\Acme\SuperApp\Cache\1.0
+    OPINION: This function appends "Cache" to the `CSIDL_LOCAL_APPDATA` value.
+    This can be disabled with the `opinion=False` option.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
             raise AppDirsError("must specify 'appauthor' on Windows")
         path = os.path.join(_get_win_folder("CSIDL_LOCAL_APPDATA"),
                             appauthor, appname)
+        if opinion:
+            path = os.path.join(path, "Cache")
     elif sys.platform == 'darwin':
         if os.uname()[-1] == 'i386':
             # Folder.FSFindFolder() **used to fail** with error -43
@@ -172,7 +182,9 @@ def user_cache_dir(appname, appauthor=None, version=None):
             basepath = path.FSRefMakePath()
         path = os.path.join(basepath, appname)
     else:
-        path = os.path.expanduser("~/.%s/cache" % appname.lower())
+        path = os.path.expanduser("~/.%s" % appname.lower())
+        if opinion:
+            path = os.path.join(path, "cache")
     if version:
         path = os.path.join(path, version)
     return path
