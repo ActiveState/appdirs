@@ -2,6 +2,12 @@
 
 ## appdirs 1.1.0 (not yet released)
 
+- Add `appdirs.AppDirs` convenience class. Usage:
+
+        >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")
+        >>> dirs.user_data_dir
+        '/Users/trentm/Library/Application Support/SuperApp/1.0'
+
 - [Windows] Cherry-pick Komodo's change to downgrade paths to the Windows short
   paths if there are high bit chars.
 - Change default `user_cache_dir()` on Linux to be singular, e.g. "~/.superapp/cache".

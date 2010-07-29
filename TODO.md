@@ -1,2 +1,1 @@
-- add the AppDirs class for "typical usage"
 - add some Windows 7 examples

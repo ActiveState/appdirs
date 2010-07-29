@@ -178,6 +178,25 @@ def user_cache_dir(appname, appauthor=None, version=None):
     return path
 
 
+class AppDirs(object):
+    """Convenience wrapper for getting application dirs."""
+    def __init__(self, appname, appauthor, version=None, roaming=False):
+        self.appname = appname
+        self.appauthor = appauthor
+        self.version = version
+        self.roaming = roaming
+    @property
+    def user_data_dir(self):
+        return user_data_dir(self.appname, self.appauthor,
+            version=self.version, roaming=self.roaming)
+    @property
+    def site_data_dir(self):
+        return site_data_dir(self.appname, self.appauthor,
+            version=self.version)
+    @property
+    def user_cache_dir(self):
+        return user_cache_dir(self.appname, self.appauthor,
+            version=self.version)
 
 
 
@@ -269,7 +288,13 @@ if sys.platform == "win32":
 #---- self test code
 
 if __name__ == "__main__":
+    print("-- using top-level functions")
     print("user data dir: %s" % user_data_dir("Komodo", "ActiveState"))
     print("site data dir: %s" % site_data_dir("Komodo", "ActiveState"))
     print("user cache dir: %s" % user_cache_dir("Komodo", "ActiveState"))
+
+    print("-- using `AppDirs`")
+    dirs = AppDirs("SuperApp", "Acme", version="1.0")
+    for attr in ("user_data_dir", "site_data_dir", "user_cache_dir"):
+        print("%s: %s" % (attr, getattr(dirs, attr)))
 
