@@ -60,18 +60,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
         path = os.path.join(_get_win_folder(const), appauthor, appname)
     elif sys.platform == 'darwin':
-        if os.uname()[-1] == 'i386':
-            # Folder.FSFindFolder() **used to fail** with error -43
-            # on x86. See Komodo bug 42669.
-            #TODO: Update this to try FSFindFolder and fallback to this
-            #      hardcoding for the specific failure mode.
-            basepath = os.path.expanduser('~/Library/Application Support')
-        else:
-            from Carbon import Folder, Folders
-            path = Folder.FSFindFolder(Folders.kUserDomain,
-                                       Folders.kApplicationSupportFolderType,
-                                       Folders.kDontCreateFolder)
-            basepath = path.FSRefMakePath()
+        basepath = _get_mac_folder('application support')
         path = os.path.join(basepath, appname)
     else:
         path = os.path.expanduser("~/." + appname.lower())
@@ -107,18 +96,7 @@ def site_data_dir(appname, appauthor=None, version=None):
         path = os.path.join(_get_win_folder("CSIDL_COMMON_APPDATA"),
                             appauthor, appname)
     elif sys.platform == 'darwin':
-        if os.uname()[-1] == 'i386':
-            # Folder.FSFindFolder() **used to fail** with error -43
-            # on x86. See Komodo bug 42669.
-            #TODO: Update this to try FSFindFolder and fallback to this
-            #      hardcoding for the specific failure mode.
-            basepath = os.path.expanduser('/Library/Application Support')
-        else:
-            from Carbon import Folder, Folders
-            path = Folder.FSFindFolder(Folders.kLocalDomain,
-                                       Folders.kApplicationSupportFolderType,
-                                       Folders.kDontCreateFolder)
-            basepath = os.path.join(path.FSRefMakePath(), appname)
+        basepath = _get_mac_folder('application support')
         path = os.path.join(basepath, appname)
     else:
         path = "/etc/"+appname.lower()
@@ -168,18 +146,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
         if opinion:
             path = os.path.join(path, "Cache")
     elif sys.platform == 'darwin':
-        if os.uname()[-1] == 'i386':
-            # Folder.FSFindFolder() **used to fail** with error -43
-            # on x86. See Komodo bug 42669.
-            #TODO: Update this to try FSFindFolder and fallback to this
-            #      hardcoding for the specific failure mode.
-            basepath = os.path.expanduser('~/Library/Caches')
-        else:
-            from Carbon import Folder, Folders
-            path = Folder.FSFindFolder(Folders.kUserDomain,
-                                       Folders.kCachedDataFolderType,
-                                       Folders.kDontCreateFolder)
-            basepath = path.FSRefMakePath()
+        basepath = _get_mac_folder('caches')
         path = os.path.join(basepath, appname)
     else:
         path = os.path.expanduser("~/.%s" % appname.lower())
@@ -213,6 +180,34 @@ class AppDirs(object):
 
 
 #---- internal support stuff
+
+def _get_mac_folder_from_carbon(name):
+    """Get folder path from the `Carbon` module"""
+    from Carbon import Folder, Folders
+    
+    folder_constant = {
+        'application support': Folders.kApplicationSupportFolderType,
+        'caches':              Folders.kCachedDataFolderType
+    }[name]
+    
+    path = Folder.FSFindFolder(Folders.kUserDomain,
+                               folder_constant,
+                               Folders.kDontCreateFolder)
+    return path.FSRefMakePath()
+    
+def _get_mac_folder_hardcoded(name):
+    return {
+        'application support': os.path.expanduser('~/Library/Application Support'),
+        'caches': os.path.expanduser('~/Library/Caches'),
+    }[name]
+    
+if sys.platform == "darwin":
+    try:
+        import Carbon
+        _get_mac_folder = _get_mac_folder_from_carbon
+    except ImportError:
+        _get_mac_folder = _get_mac_folder_hardcoded
+    
 
 def _get_win_folder_from_registry(csidl_name):
     """This is a fallback technique at best. I'm not sure if using the
