@@ -2,6 +2,8 @@
 
 ## appdirs 1.1.0 (not yet released)
 
+- [MacOSX] Drop use of 'Carbon' module in favour of hardcoded paths; supports
+  Python3 now.
 - [Windows] Append "Cache" to `user_cache_dir` on Windows by default. Add
   `opinion=False` option to disable this.
 - Add `appdirs.AppDirs` convenience class. Usage:
