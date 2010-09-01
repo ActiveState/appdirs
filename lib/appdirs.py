@@ -43,14 +43,17 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
     
     Typical user data directories are:
         Mac OS X:               ~/Library/Application Support/<AppName>
-        Unix:                   ~/.local/share/<appname>
+        Unix:                   ~/.config/<appname>
         Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
         Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
         Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
     
-    For Unix, we follow the XDG spec and support $XDG_DATA_HOME, but not
-    $XDG_DATA_DIRS.
+    For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME, but not
+    $XDG_CONFIG_DIRS. We don't use $XDG_DATA_HOME as that data dir is mostly
+    used at the time of installation, instead of the application adding data
+    during runtime. Also, in practice, Linux apps tend to store their data in
+    ~/.config/<appname> instead of ~/.local/share/<appname>.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -63,7 +66,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
             appname)
     else:
         path = os.path.join(
-            os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share")),
+            os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config")),
             appname.lower())
     if version:
         path = os.path.join(path, version)
@@ -84,12 +87,12 @@ def site_data_dir(appname, appauthor=None, version=None):
     
     Typical user data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
-        Unix:       /usr/local/share/<appname>
+        Unix:       /etc/xdg/<appname>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
     
-    For Unix, use use XDG default /usr/local/share
+    For Unix, use use XDG default /etc/xdg
     
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
@@ -103,8 +106,8 @@ def site_data_dir(appname, appauthor=None, version=None):
             os.path.expanduser('/Library/Application Support'),
             appname)
     else:
-        # XDG default for $XDG_DATA_DIRS[0]
-        path = "/usr/local/share/"+appname.lower()
+        # XDG default for $XDG_CONFIG_DIRS[0]
+        path = "/etc/xdg/"+appname.lower()
     if version:
         path = os.path.join(path, version)
     return path
