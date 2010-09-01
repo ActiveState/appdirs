@@ -98,7 +98,7 @@ def site_data_dir(appname, appauthor=None, version=None):
                             appauthor, appname)
     elif sys.platform == 'darwin':
         path = os.path.join(
-            os.path.expanduser('~/Library/Application Support'),
+            os.path.expanduser('/Library/Application Support'),
             appname)
     else:
         path = "/etc/"+appname.lower()
