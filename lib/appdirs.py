@@ -182,6 +182,12 @@ class AppDirs(object):
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
             version=self.version)
+    @property
+    def log_dir(self):
+        if sys.platform == 'darwin':
+            return os.path.expanduser('~/Library/Logs')
+        else:
+            return self.user_cache_dir
 
 
 
@@ -280,6 +286,6 @@ if __name__ == "__main__":
 
     print("-- using `AppDirs` (with mandatory version property)")
     dirs = AppDirs("SuperApp", "Acme", version="1.0")
-    for attr in ("user_data_dir", "site_data_dir", "user_cache_dir"):
+    for attr in ("user_data_dir", "site_data_dir", "user_cache_dir", "log_dir"):
         print("%s: %s" % (attr, getattr(dirs, attr)))
 
