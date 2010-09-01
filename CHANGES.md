@@ -3,6 +3,7 @@
 ## appdirs 1.1.0 (not yet released)
 
 - Add `AppDirs.log_dir`
+- [Unix] appdirs now conforms to XDG base directory spec
 - [MacOSX] Drop use of 'Carbon' module in favour of hardcoded paths; supports
   Python3 now.
 - [Windows] Append "Cache" to `user_cache_dir` on Windows by default. Add
