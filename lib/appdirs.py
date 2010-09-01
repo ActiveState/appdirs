@@ -43,16 +43,14 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
     
     Typical user data directories are:
         Mac OS X:               ~/Library/Application Support/<AppName>
-        Unix:                   ~/.<appname>
+        Unix:                   ~/.local/share/<appname>
         Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
-        Vista  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
-        Vista  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+        Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
+        Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
     
-    OPINION: For Unix there is no *real* standard here. For example, Firefox
-    uses: "~/.mozilla/firefox" which is a "~/.<appauthor>/<appname>"-type
-    scheme. As well, if you only have a single config file for your app,
-    then something like "~/.pypirc" or "~/.hgrc" is fairly common.
+    For Unix, we follow the XDG spec and support $XDG_DATA_HOME, but not
+    $XDG_DATA_DIRS.
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -64,7 +62,9 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
             os.path.expanduser('~/Library/Application Support/'),
             appname)
     else:
-        path = os.path.expanduser("~/." + appname.lower())
+        path = os.path.join(
+            os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share")),
+            appname.lower())
     if version:
         path = os.path.join(path, version)
     return path
@@ -84,10 +84,12 @@ def site_data_dir(appname, appauthor=None, version=None):
     
     Typical user data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
-        Unix:       /etc/<appname>
+        Unix:       /usr/local/share/<appname>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
+    
+    For Unix, use use XDG default /usr/local/share
     
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
@@ -101,7 +103,8 @@ def site_data_dir(appname, appauthor=None, version=None):
             os.path.expanduser('/Library/Application Support'),
             appname)
     else:
-        path = "/etc/"+appname.lower()
+        # XDG default for $XDG_DATA_DIRS[0]
+        path = "/usr/local/share/"+appname.lower()
     if version:
         path = os.path.join(path, version)
     return path
@@ -124,13 +127,10 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
     
     Typical user cache directories are:
         Mac OS X:   ~/Library/Caches/<AppName>
-        Unix:       ~/.<appname>/cache
+        Unix:       ~/.cache/<appname> (XDG default)
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Cache
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Cache
 
-    OPINION: For Unix there is no *real* standard here. This "cache" subdir is a
-    suggestion from me. This can be disabled with the `opinion=False` option.
-    
     On Windows the only suggestion in the MSDN docs is that local settings go in
     the `CSIDL_LOCAL_APPDATA` directory. This is identical to the non-roaming
     app data dir (the default returned by `user_data_dir` above). Apps typically
@@ -152,9 +152,9 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
             os.path.expanduser('~/Library/Caches'),
             appname)
     else:
-        path = os.path.expanduser("~/.%s" % appname.lower())
-        if opinion:
-            path = os.path.join(path, "cache")
+        path = os.path.join(
+            os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')),
+            appname.lower())
     if version:
         path = os.path.join(path, version)
     return path
@@ -270,12 +270,12 @@ if sys.platform == "win32":
 #---- self test code
 
 if __name__ == "__main__":
-    print("-- using top-level functions")
+    print("-- using top-level functions (without version argument)")
     print("user data dir: %s" % user_data_dir("Komodo", "ActiveState"))
     print("site data dir: %s" % site_data_dir("Komodo", "ActiveState"))
     print("user cache dir: %s" % user_cache_dir("Komodo", "ActiveState"))
 
-    print("-- using `AppDirs`")
+    print("-- using `AppDirs` (with mandatory version property)")
     dirs = AppDirs("SuperApp", "Acme", version="1.0")
     for attr in ("user_data_dir", "site_data_dir", "user_cache_dir"):
         print("%s: %s" % (attr, getattr(dirs, attr)))
