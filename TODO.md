@@ -1,3 +1,1 @@
 - add some Windows 7 examples
-- add the extra API method from applib/locations.py
-- merge with applib?
