@@ -15,18 +15,25 @@ or possibly:
 
 for [roaming profiles](http://bit.ly/9yl3b6) but that is another story.
 
-On Linux (and other Unices) the dir is typically:
+On Linux (and other Unices) the dir, according to the [XDG
+spec](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
+(and subject to some interpretation), is:
 
-    ~/.<appname>     # note AppName was lowercased
+    ~/.config/<appname>     # note AppName was lowercased
 
 
 # `appdirs` to the rescue
 
-This kind of thing is what the `appdirs` module is for. `appdirs`:
+This kind of thing is what the `appdirs` module is for. `appdirs` will
+help you choose an appropriate:
 
-- will tell you an appropriate user data dir (`user_data_dir`)
-- will tell you an appropriate user cache dir (`user_cache_dir`)
-- will tell you an appropriate site data dir (`site_data_dir`)
+- user data dir (`user_data_dir`)
+- user cache dir (`user_cache_dir`)
+- site data dir (`site_data_dir`)
+- user log dir (`user_log_dir`)
+
+and also:
+
 - is a single module so other Python packages can include their own private copy
 - is slightly opinionated on the directory names used. Look for "OPINION" in
   documentation and code for when an opinion is being applied.
@@ -45,6 +52,8 @@ On Mac OS X:
     '/Library/Application Support/SuperApp'
     >>> user_cache_dir(appname, appauthor)
     '/Users/trentm/Library/Caches/SuperApp'
+    >>> user_log_dir(appname, appauthor)
+    '/Users/trentm/Library/Logs/SuperApp'
 
 On Windows 7:
 
@@ -56,12 +65,9 @@ On Windows 7:
     >>> user_data_dir(appname, appauthor, roaming=True)
     'C:\\Users\\trentm\\AppData\\Roaming\\Acme\\SuperApp'
     >>> user_cache_dir(appname, appauthor)
-    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
-    # Suggest at least "Cache" is appended to this to separate from
-    # `user_data_dir`.
-    >>> from os.path import join
-    >>> join(user_cache_dir(appname, appauthor), "Cache")
     'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Cache'
+    >>> user_log_dir(appname, appauthor)
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Logs'
 
 On Linux:
 
@@ -69,11 +75,13 @@ On Linux:
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
     >>> user_data_dir(appname, appauthor)
-    '/home/trentm/.superapp
+    '/home/trentm/.config/superapp
     >>> site_data_dir(appname, appauthor)
-    '/etc/superapp'
+    '/etc/xdg/superapp'
     >>> user_cache_dir(appname, appauthor)
-    '/home/trentm/.superapp/cache'
+    '/home/trentm/.cache/superapp'
+    >>> user_log_dir(appname, appauthor)
+    '/home/trentm/.config/superapp/log'
 
 
 # `AppDirs` for convenience
@@ -87,11 +95,13 @@ On Linux:
     >>> dirs.user_cache_dir
     '/Users/trentm/Library/Caches/SuperApp'
 
-Note that the `AppDirs` default on Windows is to append "Cache" to the
-`.user_cache_dir` as suggested above.
 
     
-# Per-major-version isolation
+# Per-version isolation
+
+If you have multiple versions of your app in use that you want to be
+able to run side-by-side, then you may want version-isolation for these
+dirs.
 
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")
@@ -101,4 +111,6 @@ Note that the `AppDirs` default on Windows is to append "Cache" to the
     '/Library/Application Support/SuperApp/1.0'
     >>> dirs.user_cache_dir
     '/Users/trentm/Library/Caches/SuperApp/1.0'
+    >>> dirs.user_log_dir
+    '/Users/trentm/Library/Logs/SuperApp/1.0'
 
