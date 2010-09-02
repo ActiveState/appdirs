@@ -1,6 +1,6 @@
 # appdirs Changelog
 
-## appdirs 1.1.0 (not yet released)
+## appdirs 1.1.0
 
 - [issue 4] Add `AppDirs.user_log_dir`.
 - [Unix, issue 2, issue 7] appdirs now conforms to XDG base directory spec
