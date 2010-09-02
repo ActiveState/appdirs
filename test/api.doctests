@@ -1,0 +1,28 @@
+
+>>> import appdirs
+>>> hasattr(appdirs, "__version__")
+True
+>>> hasattr(appdirs, "__version_info__")
+True
+
+>>> type(appdirs.user_data_dir('MyApp', 'MyCompany')) == type('')
+True
+>>> type(appdirs.site_data_dir('MyApp', 'MyCompany')) == type('')
+True
+>>> type(appdirs.user_cache_dir('MyApp', 'MyCompany')) == type('')
+True
+>>> type(appdirs.user_log_dir('MyApp', 'MyCompany')) == type('')
+True
+
+
+>>> dirs = appdirs.AppDirs('MyApp', 'MyCompany', version='1.0')
+>>> type(dirs.user_data_dir) == type('')
+True
+>>> type(dirs.site_data_dir) == type('')
+True
+>>> type(dirs.user_cache_dir) == type('')
+True
+>>> type(dirs.user_log_dir) == type('')
+True
+
+
