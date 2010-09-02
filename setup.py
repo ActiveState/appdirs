@@ -29,8 +29,10 @@ setup(name='appdirs',
         Programming Language :: Python :: 2.6
         Programming Language :: Python :: 2.7
         Programming Language :: Python :: 3
+        Programming Language :: Python :: 3.1
         Topic :: Software Development :: Libraries :: Python Modules
         """.split('\n') if c.strip()],
+    keywords='application directory log cache user',
     author='Trent Mick',
     author_email='trentm@gmail.com',
     maintainer='Trent Mick',
