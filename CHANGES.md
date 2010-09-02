@@ -1,5 +1,9 @@
 # appdirs Changelog
 
+## appdirs 1.1.1 (not yet released)
+
+(nothing yet)
+
 ## appdirs 1.1.0
 
 - [issue 4] Add `AppDirs.user_log_dir`.
