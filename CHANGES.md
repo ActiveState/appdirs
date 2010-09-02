@@ -3,7 +3,7 @@
 ## appdirs 1.1.0 (not yet released)
 
 - [issue 4] Add `AppDirs.user_log_dir`.
-- [Unix, issue 2] appdirs now conforms to XDG base directory spec
+- [Unix, issue 2, issue 7] appdirs now conforms to XDG base directory spec
   <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>
 - [Mac, issue 5] Fix `site_data_dir()` on Mac.
 - [Mac] Drop use of 'Carbon' module in favour of hardcoded paths; supports
