@@ -198,11 +198,11 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
             os.path.expanduser('~/Library/Logs'),
             appname)
     elif sys.platform == "win32":
-        path = user_data_dir(appname, appauthor, version)
+        path = user_data_dir(appname, appauthor, version); version=False
         if opinion:
             path = os.path.join(path, "Logs")
     else:
-        path = user_cache_dir(appname, appauthor, version)
+        path = user_cache_dir(appname, appauthor, version); version=False
         if opinion:
             path = os.path.join(path, "log")
     if version:
