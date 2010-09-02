@@ -81,7 +81,7 @@ On Linux:
     >>> user_cache_dir(appname, appauthor)
     '/home/trentm/.cache/superapp'
     >>> user_log_dir(appname, appauthor)
-    '/home/trentm/.config/superapp/log'
+    '/home/trentm/.cache/superapp/log'
 
 
 # `AppDirs` for convenience
@@ -94,6 +94,8 @@ On Linux:
     '/Library/Application Support/SuperApp'
     >>> dirs.user_cache_dir
     '/Users/trentm/Library/Caches/SuperApp'
+    >>> dirs.user_log_dir
+    '/Users/trentm/Library/Logs/SuperApp'
 
 
     

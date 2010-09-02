@@ -11,7 +11,7 @@ See <http://github.com/ActiveState/appdirs> for details and usage.
 # - Mac OS X: http://developer.apple.com/documentation/MacOSX/Conceptual/BPFileSystem/index.html
 # - XDG spec for Un*x: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
-__version_info__ = (1, 1, 1)
+__version_info__ = (1, 2, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
 
@@ -181,7 +181,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
 
     Typical user cache directories are:
         Mac OS X:   ~/Library/Logs/<AppName>
-        Unix:       ~/.config/<appname>/log  # or under $XDG_CONFIG_HOME if defined
+        Unix:       ~/.cache/<appname>/log  # or under $XDG_CACHE_HOME if defined
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Logs
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Logs
 
@@ -202,7 +202,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
         if opinion:
             path = os.path.join(path, "Logs")
     else:
-        path = user_data_dir(appname, appauthor, version)
+        path = user_cache_dir(appname, appauthor, version)
         if opinion:
             path = os.path.join(path, "log")
     if version:
