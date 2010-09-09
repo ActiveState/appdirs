@@ -203,6 +203,11 @@ class pypi_upload(Task):
         import webbrowser
         webbrowser.open_new(url)
 
+class tox(Task):
+    """Test on all available Python versions using tox"""
+    def make(self):
+        sh.run("python toxbootstrap.py")
+
 class test(Task):
     """Run all tests (except known failures)."""
     def make(self):
