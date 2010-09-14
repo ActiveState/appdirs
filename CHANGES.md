@@ -4,6 +4,7 @@
 
 - [Unix] Put `user_log_dir` under the *cache* dir on Unix. Seems to be more
   typical.
+- [issue 9] Make `unicode` work on py3k
 
 ## appdirs 1.1.0
 
