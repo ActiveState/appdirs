@@ -18,6 +18,10 @@ __version__ = '.'.join(map(str, __version_info__))
 import sys
 import os
 
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    unicode = str
 
 class AppDirsError(Exception):
     pass
