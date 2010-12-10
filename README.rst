@@ -1,36 +1,38 @@
-# the problem
+the problem
+===========
 
 What directory should your app use for storing user data? If running on Mac OS X, you
-should use:
+should use::
 
     ~/Library/Application Support/<AppName>
 
-If on Windows (at least English Win XP) that should be:
+If on Windows (at least English Win XP) that should be::
 
     C:\Documents and Settings\<User>\Application Data\Local Settings\<AppAuthor>\<AppName>
 
-or possibly:
+or possibly::
 
     C:\Documents and Settings\<User>\Application Data\<AppAuthor>\<AppName>
 
-for [roaming profiles](http://bit.ly/9yl3b6) but that is another story.
+for `roaming profiles <http://bit.ly/9yl3b6>`_ but that is another story.
 
-On Linux (and other Unices) the dir, according to the [XDG
-spec](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-(and subject to some interpretation), is:
+On Linux (and other Unices) the dir, according to the `XDG
+spec <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_
+(and subject to some interpretation), is::
 
     ~/.config/<appname>     # note AppName was lowercased
 
 
-# `appdirs` to the rescue
+``appdirs`` to the rescue
+=========================
 
-This kind of thing is what the `appdirs` module is for. `appdirs` will
+This kind of thing is what the ``appdirs`` module is for. ``appdirs`` will
 help you choose an appropriate:
 
-- user data dir (`user_data_dir`)
-- user cache dir (`user_cache_dir`)
-- site data dir (`site_data_dir`)
-- user log dir (`user_log_dir`)
+- user data dir (``user_data_dir``)
+- user cache dir (``user_cache_dir``)
+- site data dir (``site_data_dir``)
+- user log dir (``user_log_dir``)
 
 and also:
 
@@ -39,9 +41,10 @@ and also:
   documentation and code for when an opinion is being applied.
 
 
-# some example output
+some example output
+===================
 
-On Mac OS X:
+On Mac OS X::
 
     >>> from appdirs import *
     >>> appname = "SuperApp"
@@ -55,7 +58,7 @@ On Mac OS X:
     >>> user_log_dir(appname, appauthor)
     '/Users/trentm/Library/Logs/SuperApp'
 
-On Windows 7:
+On Windows 7::
 
     >>> from appdirs import *
     >>> appname = "SuperApp"
@@ -69,7 +72,7 @@ On Windows 7:
     >>> user_log_dir(appname, appauthor)
     'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Logs'
 
-On Linux:
+On Linux::
 
     >>> from appdirs import *
     >>> appname = "SuperApp"
@@ -84,7 +87,10 @@ On Linux:
     '/home/trentm/.cache/superapp/log'
 
 
-# `AppDirs` for convenience
+``AppDirs`` for convenience
+===========================
+
+::
 
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme")
@@ -99,11 +105,12 @@ On Linux:
 
 
     
-# Per-version isolation
+Per-version isolation
+=====================
 
 If you have multiple versions of your app in use that you want to be
 able to run side-by-side, then you may want version-isolation for these
-dirs.
+dirs::
 
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")

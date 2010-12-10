@@ -12,17 +12,13 @@ try:
     import appdirs
 finally:
     del sys.path[0]
-README = open(os.path.join(_top_dir, 'README.md')).read()
+README = open(os.path.join(_top_dir, 'README.rst')).read()
+CHANGES = open(os.path.join(_top_dir, 'CHANGES.rst')).read()
 
 setup(name='appdirs',
     version=appdirs.__version__,
     description='A small Python module for determining appropriate platform-specific dirs, e.g. a "user data dir".',
-    long_description=r'''\
-See README_ for full details, and CHANGES_ for release news.
-
-.. _README: http://github.com/ActiveState/appdirs/blob/master/README.md#readme
-.. _CHANGES: http://github.com/ActiveState/appdirs/blob/master/CHANGES.md#readme
-''',
+    long_description=README + '\n' + CHANGES,
     classifiers=[c.strip() for c in """
         Development Status :: 4 - Beta
         Intended Audience :: Developers
