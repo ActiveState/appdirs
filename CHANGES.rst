@@ -1,8 +1,8 @@
 appdirs Changelog
 =================
 
-appdirs 1.2.0 (not yet released)
---------------------------------
+appdirs 1.2.0
+-------------
 
 - [Unix] Put ``user_log_dir`` under the *cache* dir on Unix. Seems to be more
   typical.
