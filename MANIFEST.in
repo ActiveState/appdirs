@@ -1,4 +1,4 @@
-include README.md
-include CHANGES.md
+include README.rst
+include CHANGES.rst
 include LICENSE.txt
 recursive-include lib *.py
