@@ -41,6 +41,8 @@ class cut_a_release(Task):
     proj_name = "appdirs"
     version_py_path = "lib/appdirs.py"
     version_module = "appdirs"
+
+    # XXX: this needs to be changed from .md to .rst format
     _changes_parser = re.compile(r'^## %s (?P<ver>[\d\.abc]+)'
         r'(?P<nyr>\s+\(not yet released\))?'
         r'(?P<body>.*?)(?=^##|\Z)' % proj_name, re.M | re.S)
@@ -62,18 +64,19 @@ class cut_a_release(Task):
         self.log.info("cutting a %s release", version)
 
         # Checks: Ensure there is a section in changes for this version.
-        changes_path = join(self.dir, "CHANGES.md")
+        changes_path = join(self.dir, "CHANGES.rst")
         changes_txt = changes_txt_before = codecs.open(changes_path, 'r', 'utf-8').read()
+        raise NotImplementedError('_changes_parser: change me to .rst')
         changes_sections = self._changes_parser.findall(changes_txt)
         top_ver = changes_sections[0][0]
         if top_ver != version:
-            raise MkError("top section in `CHANGES.md' is for "
+            raise MkError("top section in `CHANGES.rst' is for "
                 "version %r, expected version %r: aborting"
                 % (top_ver, version))
         top_nyr = changes_sections[0][1]
         if not top_nyr:
             answer = query_yes_no("\n* * *\n"
-                "The top section in `CHANGES.md' doesn't have the expected\n"
+                "The top section in `CHANGES.rst' doesn't have the expected\n"
                 "'(not yet released)' marker. Has this been released already?",
                 default="yes")
             if answer != "no":
@@ -88,7 +91,7 @@ class cut_a_release(Task):
         # Commits to prepare release.
         changes_txt = changes_txt.replace(" (not yet released)", "", 1)
         if not DRY_RUN and changes_txt != changes_txt_before:
-            self.log.info("prepare `CHANGES.md' for release")
+            self.log.info("prepare `CHANGES.rst' for release")
             f = codecs.open(changes_path, 'w', 'utf-8')
             f.write(changes_txt)
             f.close()
