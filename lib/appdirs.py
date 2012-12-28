@@ -23,9 +23,6 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     unicode = str
 
-class AppDirsError(Exception):
-    pass
-
 
 
 def user_data_dir(appname, appauthor=None, version=None, roaming=False):
@@ -34,7 +31,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
         "appname" is the name of application.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name.
+            it is the owning company name. This falls back to appname.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -62,7 +59,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
-            raise AppDirsError("must specify 'appauthor' on Windows")
+            appauthor = appname
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
         path = os.path.join(_get_win_folder(const), appauthor, appname)
     elif sys.platform == 'darwin':
@@ -84,7 +81,7 @@ def site_data_dir(appname, appauthor=None, version=None):
         "appname" is the name of application.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name.
+            it is the owning company name. This falls back to appname.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -103,7 +100,7 @@ def site_data_dir(appname, appauthor=None, version=None):
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
-            raise AppDirsError("must specify 'appauthor' on Windows")
+            appauthor = appname
         path = os.path.join(_get_win_folder("CSIDL_COMMON_APPDATA"),
                             appauthor, appname)
     elif sys.platform == 'darwin':
@@ -125,7 +122,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
         "appname" is the name of application.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name.
+            it is the owning company name. This falls back to appname.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -151,7 +148,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
-            raise AppDirsError("must specify 'appauthor' on Windows")
+            appauthor = appname
         path = os.path.join(_get_win_folder("CSIDL_LOCAL_APPDATA"),
                             appauthor, appname)
         if opinion:
@@ -174,7 +171,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
         "appname" is the name of application.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name.
+            it is the owning company name. This falls back to appname.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
