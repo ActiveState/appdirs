@@ -28,10 +28,11 @@ class AppDirsError(Exception):
 
 
 
-def user_data_dir(appname, appauthor=None, version=None, roaming=False):
+def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
 
         "appname" is the name of application.
+            If None, just the system directory is returned.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
             it is the owning company name.
@@ -39,6 +40,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+            Only applied when appname is present.
         "roaming" (boolean, default False) can be set True to use the Windows
             roaming appdata directory. That means that for users on a Windows
             network setup for roaming profiles, this user data will be
@@ -64,24 +66,27 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
         if appauthor is None:
             raise AppDirsError("must specify 'appauthor' on Windows")
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
-        path = os.path.join(_get_win_folder(const), appauthor, appname)
+        path = os.path.normpath(_get_win_folder(const))
+        if appname:
+            path = os.path.join(path, appauthor, appname)
     elif sys.platform == 'darwin':
-        path = os.path.join(
-            os.path.expanduser('~/Library/Application Support/'),
-            appname)
+        path = os.path.expanduser('~/Library/Application Support/')
+        if appname:
+            path = os.path.join(path, appname)
     else:
-        path = os.path.join(
-            os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config")),
-            appname.lower())
-    if version:
+        path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
+        if appname:
+            path = os.path.join(path, appname.lower())
+    if appname and version:
         path = os.path.join(path, version)
     return path
 
 
-def site_data_dir(appname, appauthor=None, version=None):
+def site_data_dir(appname=None, appauthor=None, version=None):
     """Return full path to the user-shared data dir for this application.
 
         "appname" is the name of application.
+            If None, just the system directory is returned.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
             it is the owning company name.
@@ -89,6 +94,7 @@ def site_data_dir(appname, appauthor=None, version=None):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+            Only applied when appname is present.
 
     Typical user data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
@@ -104,25 +110,29 @@ def site_data_dir(appname, appauthor=None, version=None):
     if sys.platform.startswith("win"):
         if appauthor is None:
             raise AppDirsError("must specify 'appauthor' on Windows")
-        path = os.path.join(_get_win_folder("CSIDL_COMMON_APPDATA"),
-                            appauthor, appname)
+        path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
+        if appname:
+            path = os.path.join(path, appauthor, appname)
     elif sys.platform == 'darwin':
-        path = os.path.join(
-            os.path.expanduser('/Library/Application Support'),
-            appname)
+        path = os.path.expanduser('/Library/Application Support')
+        if appname:
+            path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_CONFIG_DIRS[0]. Perhaps should actually
         # *use* that envvar, if defined.
-        path = "/etc/xdg/"+appname.lower()
-    if version:
+        path = '/etc/xdg'
+        if appname:
+            path = os.path.join(path, appname.lower())
+    if appname and version:
         path = os.path.join(path, version)
     return path
 
 
-def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
+def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     r"""Return full path to the user-specific cache dir for this application.
 
         "appname" is the name of application.
+            If None, just the system directory is returned.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
             it is the owning company name.
@@ -130,6 +140,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+            Only applied when appname is present.
         "opinion" (boolean) can be False to disable the appending of
             "Cache" to the base app data dir for Windows. See
             discussion below.
@@ -152,26 +163,28 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
     if sys.platform.startswith("win"):
         if appauthor is None:
             raise AppDirsError("must specify 'appauthor' on Windows")
-        path = os.path.join(_get_win_folder("CSIDL_LOCAL_APPDATA"),
-                            appauthor, appname)
-        if opinion:
-            path = os.path.join(path, "Cache")
+        path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
+        if appname:
+            path = os.path.join(path, appauthor, appname)
+            if opinion:
+                path = os.path.join(path, "Cache")
     elif sys.platform == 'darwin':
-        path = os.path.join(
-            os.path.expanduser('~/Library/Caches'),
-            appname)
+        path = os.path.expanduser('~/Library/Caches')
+        if appname:
+            path = os.path.join(path, appname)
     else:
-        path = os.path.join(
-            os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')),
-            appname.lower())
-    if version:
+        path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
+        if appname:
+            path = os.path.join(path, appname.lower())
+    if appname and version:
         path = os.path.join(path, version)
     return path
 
-def user_log_dir(appname, appauthor=None, version=None, opinion=True):
+def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     r"""Return full path to the user-specific log dir for this application.
 
         "appname" is the name of application.
+            If None, just the system directory is returned.
         "appauthor" (only required and used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
             it is the owning company name.
@@ -179,6 +192,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
+            Only applied when appname is present.
         "opinion" (boolean) can be False to disable the appending of
             "Logs" to the base app data dir for Windows, and "log" to the
             base cache dir for Unix. See discussion below.
@@ -209,7 +223,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
         path = user_cache_dir(appname, appauthor, version); version=False
         if opinion:
             path = os.path.join(path, "log")
-    if version:
+    if appname and version:
         path = os.path.join(path, version)
     return path
 
