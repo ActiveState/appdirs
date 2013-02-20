@@ -48,14 +48,14 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
 
     Typical user data directories are:
         Mac OS X:               ~/Library/Application Support/<AppName>
-        Unix:                   ~/.config/<appname>    # or in $XDG_CONFIG_HOME if defined
+        Unix:                   ~/.config/<AppName>    # or in $XDG_CONFIG_HOME if defined
         Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
         Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
         Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
 
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
-    That means, by deafult "~/.local/share/<appname>".
+    That means, by deafult "~/.local/share/<AppName>".
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -69,7 +69,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
     else:
         path = os.path.join(
             os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share")),
-            appname.lower())
+            appname)
     if version:
         path = os.path.join(path, version)
     return path
@@ -89,7 +89,7 @@ def site_data_dir(appname, appauthor=None, version=None):
 
     Typical user data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
-        Unix:       /etc/xdg/<appname>
+        Unix:       /etc/xdg/<AppName>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
@@ -110,7 +110,7 @@ def site_data_dir(appname, appauthor=None, version=None):
     else:
         # XDG default for $XDG_CONFIG_DIRS[0]. Perhaps should actually
         # *use* that envvar, if defined.
-        path = "/etc/xdg/"+appname.lower()
+        path = "/etc/xdg/"+appname
     if version:
         path = os.path.join(path, version)
     return path
@@ -133,7 +133,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
 
     Typical user cache directories are:
         Mac OS X:   ~/Library/Caches/<AppName>
-        Unix:       ~/.cache/<appname> (XDG default)
+        Unix:       ~/.cache/<AppName> (XDG default)
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Cache
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Cache
 
@@ -160,7 +160,7 @@ def user_cache_dir(appname, appauthor=None, version=None, opinion=True):
     else:
         path = os.path.join(
             os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')),
-            appname.lower())
+            appname)
     if version:
         path = os.path.join(path, version)
     return path
@@ -182,7 +182,7 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
 
     Typical user cache directories are:
         Mac OS X:   ~/Library/Logs/<AppName>
-        Unix:       ~/.cache/<appname>/log  # or under $XDG_CACHE_HOME if defined
+        Unix:       ~/.cache/<AppName>/log  # or under $XDG_CACHE_HOME if defined
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Logs
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Logs
 
