@@ -11,7 +11,7 @@ See <http://github.com/ActiveState/appdirs> for details and usage.
 # - Mac OS X: http://developer.apple.com/documentation/MacOSX/Conceptual/BPFileSystem/index.html
 # - XDG spec for Un*x: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
-__version_info__ = (1, 2, 0)
+__version_info__ = (1, 3, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
 
@@ -54,11 +54,8 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
         Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
         Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
 
-    For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME. We don't
-    use $XDG_DATA_HOME as that data dir is mostly used at the time of
-    installation, instead of the application adding data during runtime.
-    Also, in practice, Linux apps tend to store their data in
-    "~/.config/<appname>" instead of "~/.local/share/<appname>".
+    For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
+    That means, by deafult "~/.local/share/<appname>".
     """
     if sys.platform.startswith("win"):
         if appauthor is None:
@@ -71,7 +68,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
             appname)
     else:
         path = os.path.join(
-            os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config")),
+            os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share")),
             appname.lower())
     if version:
         path = os.path.join(path, version)
