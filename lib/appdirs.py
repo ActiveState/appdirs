@@ -48,7 +48,7 @@ def user_data_dir(appname, appauthor=None, version=None, roaming=False):
 
     Typical user data directories are:
         Mac OS X:               ~/Library/Application Support/<AppName>
-        Unix:                   ~/.config/<AppName>    # or in $XDG_CONFIG_HOME if defined
+        Unix:                   ~/.local/share/<AppName>    # or in $XDG_DATA_HOME, if defined
         Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
         Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
