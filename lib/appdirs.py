@@ -125,8 +125,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
         if appname:
             if version:
                 appname = os.path.join(appname, version)
-            plist = [ os.sep.join([x, appname]) for x in pathlist ]
-            pathlist = plist
+            pathlist = [ os.sep.join([x, appname]) for x in pathlist ]
 
         if returnlist:
             path = os.pathsep.join(pathlist)
