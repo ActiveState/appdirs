@@ -76,7 +76,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     return path
 
 
-def site_data_dir(appname=None, appauthor=None, version=None):
+def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
     """Return full path to the user-shared data dir for this application.
 
         "appname" is the name of application.
@@ -89,15 +89,20 @@ def site_data_dir(appname=None, appauthor=None, version=None):
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
             Only applied when appname is present.
+        "returnlist" is an optional parameter only applicable to *nix
+            which indicates that the entire list of data dirs should be
+            returned. By default, the first item from XDG_DATA_DIRS is
+            returned, or '/usr/local/share/<AppName>',
+            if XDG_DATA_DIRS is not set
 
     Typical user data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
-        Unix:       /etc/xdg/<AppName>
+        Unix:       /usr/local/share/<AppName> or /usr/share/<AppName>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
 
-    For Unix, this is using the $XDG_CONFIG_DIRS[0] default.
+    For Unix, this is using the $XDG_DATA_DIRS[0] default.
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
@@ -112,11 +117,23 @@ def site_data_dir(appname=None, appauthor=None, version=None):
         if appname:
             path = os.path.join(path, appname)
     else:
-        # XDG default for $XDG_CONFIG_DIRS[0]. Perhaps should actually
-        # *use* that envvar, if defined.
-        path = '/etc/xdg'
+        # XDG default for $XDG_DATA_DIRS
+        # only first, if returnlist is False
+        path = os.getenv('XDG_DATA_DIRS',
+                        os.pathsep.join(['/usr/local/share', '/usr/share']))
+        pathlist = [ os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep) ]
         if appname:
-            path = os.path.join(path, appname)
+            if version:
+                appname = os.path.join(appname, version)
+            plist = [ os.sep.join([x, appname]) for x in pathlist ]
+            pathlist = plist
+
+        if returnlist:
+            path = os.pathsep.join(pathlist)
+        else:
+            path = pathlist[0]
+        return path
+
     if appname and version:
         path = os.path.join(path, version)
     return path
