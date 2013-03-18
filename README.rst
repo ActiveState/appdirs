@@ -29,8 +29,10 @@ This kind of thing is what the ``appdirs`` module is for. ``appdirs`` will
 help you choose an appropriate:
 
 - user data dir (``user_data_dir``)
+- user donfig dir (``user_donfig_dir``)
 - user cache dir (``user_cache_dir``)
 - site data dir (``site_data_dir``)
+- site config dir (``site_config_dir``)
 - user log dir (``user_log_dir``)
 
 and also:
@@ -86,6 +88,13 @@ On Linux::
     '/home/trentm/.cache/SuperApp'
     >>> user_log_dir(appname, appauthor)
     '/home/trentm/.cache/SuperApp/log'
+    >>> user_config_dir(appname)
+    '/home/trentm/.config/SuperApp'
+    >>> site_config_dir(appname)
+    '/etc/xdg/SuperApp'
+    >>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'
+    >>> site_config_dir(appname, returnlist=True)
+    '/etc/SuperApp:/usr/local/etc/SuperApp'
 
 
 ``AppDirs`` for convenience
