@@ -10,8 +10,8 @@ appdirs 1.3.0
 - [Unix] Fixes the uterly wrong behaviour in ``site_data_dir``, return result
   based on XDG_DATA_DIRS and make room for respecting the standard which
   specifies XDG_DATA_DIRS is a multiple-value variable
-- Add ``*_config_dir`` which are distinct on nix-es, according to XDG specs;
-  on Windows and Mac return the corresponding ``*_data_dir``
+- [Issue 6] Add ``*_config_dir`` which are distinct on nix-es, according to
+  XDG specs; on Windows and Mac return the corresponding ``*_data_dir``
 
 appdirs 1.2.0
 -------------
