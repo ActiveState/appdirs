@@ -138,6 +138,94 @@ def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
     return path
 
 
+def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
+    r"""Return full path to the user-specific config dir for this application.
+
+        "appname" is the name of application.
+            If None, just the system directory is returned.
+        "appauthor" (only required and used on Windows) is the name of the
+            appauthor or distributing body for this application. Typically
+            it is the owning company name. This falls back to appname.
+        "version" is an optional version path element to append to the
+            path. You might want to use this if you want multiple versions
+            of your app to be able to run independently. If used, this
+            would typically be "<major>.<minor>".
+            Only applied when appname is present.
+        "roaming" (boolean, default False) can be set True to use the Windows
+            roaming appdata directory. That means that for users on a Windows
+            network setup for roaming profiles, this user data will be
+            sync'd on login. See
+            <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
+            for a discussion of issues.
+
+    Typical user data directories are:
+        Mac OS X:               same as user_data_dir
+        Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
+        Win *:                  same as user_data_dir
+
+    For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
+    That means, by deafult "~/.local/share/<AppName>".
+    """
+    if sys.platform.startswith("win") or sys.platform == "darwin":
+        path = user_data_dir(appname, appauthor, None, roaming)
+    else:
+        path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
+        if appname:
+            path = os.path.join(path, appname)
+    if appname and version:
+        path = os.path.join(path, version)
+    return path
+
+
+def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False):
+    """Return full path to the user-shared data dir for this application.
+
+        "appname" is the name of application.
+            If None, just the system directory is returned.
+        "appauthor" (only required and used on Windows) is the name of the
+            appauthor or distributing body for this application. Typically
+            it is the owning company name. This falls back to appname.
+        "version" is an optional version path element to append to the
+            path. You might want to use this if you want multiple versions
+            of your app to be able to run independently. If used, this
+            would typically be "<major>.<minor>".
+            Only applied when appname is present.
+        "returnlist" is an optional parameter only applicable to *nix
+            which indicates that the entire list of config dirs should be
+            returned. By default, the first item from XDG_CONFIG_DIRS is
+            returned, or '/etc/xdg/<AppName>', if XDG_CONFIG_DIRS is not set
+
+    Typical user data directories are:
+        Mac OS X:   same as site_data_dir
+        Unix:       /etc/xdg/<AppName> or $XDG_CONFIG_DIRS[i]/<AppName> for each value in
+                    $XDG_CONFIG_DIRS
+        Win *:      same as site_data_dir
+        Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
+
+    For Unix, this is using the $XDG_CONFIG_DIRS[0] default, if returnlist=False
+
+    WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
+    """
+    if (sys.platform.startswith("win")) or (sys.platform == 'darwin'):
+        path = site_data_dir(appname, appauthor)
+        if appname and version:
+            path = os.path.join(path, version)
+    else:
+        # XDG default for $XDG_CONFIG_DIRS
+        # only first, if returnlist is False
+        path = os.getenv('XDG_CONFIG_DIRS', '/etc/xdg')
+        pathlist = [ os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep) ]
+        if appname:
+            if version:
+                appname = os.path.join(appname, version)
+            pathlist = [ os.sep.join([x, appname]) for x in pathlist ]
+
+        if returnlist:
+            path = os.pathsep.join(pathlist)
+        else:
+            path = pathlist[0]
+    return path
+
 def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     r"""Return full path to the user-specific cache dir for this application.
 
@@ -253,6 +341,14 @@ class AppDirs(object):
             version=self.version, roaming=self.roaming)
     @property
     def site_data_dir(self):
+        return site_data_dir(self.appname, self.appauthor,
+            version=self.version, returnlist=self.returnlist)
+    @property
+    def user_config_dir(self):
+        return user_config_dir(self.appname, self.appauthor,
+            version=self.version, roaming=self.roaming)
+    @property
+    def site_config_dir(self):
         return site_data_dir(self.appname, self.appauthor,
             version=self.version, returnlist=self.returnlist)
     @property
