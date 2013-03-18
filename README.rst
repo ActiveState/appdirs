@@ -17,10 +17,9 @@ or possibly::
 for `roaming profiles <http://bit.ly/9yl3b6>`_ but that is another story.
 
 On Linux (and other Unices) the dir, according to the `XDG
-spec <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_
-(and subject to some interpretation), is::
+spec <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_, is::
 
-    ~/.config/<appname>     # note AppName was lowercased
+    ~/.local/share/<AppName>
 
 
 ``appdirs`` to the rescue
@@ -30,8 +29,10 @@ This kind of thing is what the ``appdirs`` module is for. ``appdirs`` will
 help you choose an appropriate:
 
 - user data dir (``user_data_dir``)
+- user donfig dir (``user_donfig_dir``)
 - user cache dir (``user_cache_dir``)
 - site data dir (``site_data_dir``)
+- site config dir (``site_config_dir``)
 - user log dir (``user_log_dir``)
 
 and also:
@@ -78,13 +79,22 @@ On Linux::
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
     >>> user_data_dir(appname, appauthor)
-    '/home/trentm/.config/superapp
+    '/home/trentm/.local/share/SuperApp
     >>> site_data_dir(appname, appauthor)
-    '/etc/xdg/superapp'
+    '/usr/local/share/SuperApp'
+    >>> site_data_dir(appname, appauthor, returnlist=True)
+    '/usr/local/share/SuperApp:/usr/share/SuperApp'
     >>> user_cache_dir(appname, appauthor)
-    '/home/trentm/.cache/superapp'
+    '/home/trentm/.cache/SuperApp'
     >>> user_log_dir(appname, appauthor)
-    '/home/trentm/.cache/superapp/log'
+    '/home/trentm/.cache/SuperApp/log'
+    >>> user_config_dir(appname)
+    '/home/trentm/.config/SuperApp'
+    >>> site_config_dir(appname)
+    '/etc/xdg/SuperApp'
+    >>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'
+    >>> site_config_dir(appname, returnlist=True)
+    '/etc/SuperApp:/usr/local/etc/SuperApp'
 
 
 ``AppDirs`` for convenience
