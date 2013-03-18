@@ -39,7 +39,7 @@ class cut_a_release(Task):
     for details.
     """
     proj_name = "appdirs"
-    version_py_path = "lib/appdirs.py"
+    version_py_path = "appdirs.py"
     version_module = "appdirs"
 
     # XXX: this needs to be changed from .md to .rst format
@@ -163,8 +163,6 @@ class cut_a_release(Task):
         return version[:-len(str(last_bit))] + str(last_bit + 1)
 
     def _get_version(self):
-        lib_dir = join(dirname(abspath(__file__)), "lib")
-        sys.path.insert(0, lib_dir)
         try:
             mod = __import__(self.version_module)
             return mod.__version__
@@ -180,7 +178,6 @@ class clean(Task):
             "build",
             "MANIFEST",
             "*.pyc",
-            "lib/*.pyc",
         ]
         for pattern in patterns:
             p = join(self.dir, pattern)
@@ -201,7 +198,6 @@ class pypi_upload(Task):
                 % _setup_command_prefix(),
             self.dir, self.log.debug)
 
-        sys.path.insert(0, join(self.dir, "lib"))
         url = "http://pypi.python.org/pypi/appdirs/"
         import webbrowser
         webbrowser.open_new(url)
