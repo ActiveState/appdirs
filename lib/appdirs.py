@@ -230,11 +230,13 @@ def user_log_dir(appname, appauthor=None, version=None, opinion=True):
 
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
-    def __init__(self, appname, appauthor, version=None, roaming=False):
+    def __init__(self, appname, appauthor=None, version=None,
+                    roaming=False, returnlist=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
         self.roaming = roaming
+        self.returnlist = returnlist
     @property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
@@ -242,7 +244,7 @@ class AppDirs(object):
     @property
     def site_data_dir(self):
         return site_data_dir(self.appname, self.appauthor,
-            version=self.version)
+            version=self.version, returnlist=self.returnlist)
     @property
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
