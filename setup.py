@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-
 import sys
 import os
+import os.path
 from distutils.core import setup, Command
 import appdirs
 
@@ -29,14 +29,23 @@ class RunTests(Command):
         pass
 
     def run(self):
-        tests = unittest.TestLoader().discover('.')
-        runner = unittest.TextTestRunner(verbosity=2)
-        runner.run(tests)
+        test_modules = ["test.%s" % filename.replace('.py', '')
+            for filename in os.listdir('test')
+            if filename.endswith('.py') and filename.startswith('test_')]
+        for mod in test_modules:
+            __import__(mod)
+
+        suite = unittest.TestSuite()
+        for mod in [sys.modules[modname] for modname in test_modules]:
+            suite.addTest(unittest.TestLoader().loadTestsFromModule(mod))
+        unittest.TextTestRunner(verbosity=2).run(suite)
 
 
 def read(fname):
-    with open(os.path.join(os.path.dirname(__file__), fname)) as inf:
-        return "\n" + inf.read().replace("\r\n", "\n")
+    inf = open(os.path.join(os.path.dirname(__file__), fname))
+    out = "\n" + inf.read().replace("\r\n", "\n")
+    inf.close()
+    return out
 
 
 setup(name='appdirs',
