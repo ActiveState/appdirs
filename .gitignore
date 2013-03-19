@@ -4,3 +4,5 @@ tmp/
 build/
 dist/
 .tox/
+MANIFEST
+*.komodoproject
