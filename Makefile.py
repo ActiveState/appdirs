@@ -1,6 +1,7 @@
+# This is a Makefile for the `mk` tool. Install it using,
+#
+#    pip install which mk
 
-# This is a Makefile for the `mk` tool. (Limited) details for that here:
-# <http://svn.openkomodo.com/openkomodo/browse/mk>
 
 import sys
 import os
@@ -220,8 +221,7 @@ class test(Task):
             ver_str = "%s.%s" % ver
             print "-- test with Python %s (%s)" % (ver_str, python)
             assert ' ' not in python
-            sh.run_in_dir("%s test.py -- -knownfailure" % python,
-                join(self.dir, "test"))
+            sh.run("%s setup.py test" % python)
 
     def _python_ver_from_python(self, python):
         assert ' ' not in python
