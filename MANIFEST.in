@@ -1,4 +1,4 @@
 include README.rst
 include CHANGES.rst
 include LICENSE.txt
-recursive-include lib *.py
+include *.py
