@@ -78,7 +78,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     return path
 
 
-def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
+def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
     """Return full path to the user-shared data dir for this application.
 
         "appname" is the name of application.
@@ -91,7 +91,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
             Only applied when appname is present.
-        "returnlist" is an optional parameter only applicable to *nix
+        "multipath" is an optional parameter only applicable to *nix
             which indicates that the entire list of data dirs should be
             returned. By default, the first item from XDG_DATA_DIRS is
             returned, or '/usr/local/share/<AppName>',
@@ -120,7 +120,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
             path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_DATA_DIRS
-        # only first, if returnlist is False
+        # only first, if multipath is False
         path = os.getenv('XDG_DATA_DIRS',
                         os.pathsep.join(['/usr/local/share', '/usr/share']))
         pathlist = [ os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep) ]
@@ -129,7 +129,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, returnlist=False):
                 appname = os.path.join(appname, version)
             pathlist = [ os.sep.join([x, appname]) for x in pathlist ]
 
-        if returnlist:
+        if multipath:
             path = os.pathsep.join(pathlist)
         else:
             path = pathlist[0]
@@ -179,7 +179,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     return path
 
 
-def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False):
+def site_config_dir(appname=None, appauthor=None, version=None, multipath=False):
     """Return full path to the user-shared data dir for this application.
 
         "appname" is the name of application.
@@ -192,7 +192,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False
             of your app to be able to run independently. If used, this
             would typically be "<major>.<minor>".
             Only applied when appname is present.
-        "returnlist" is an optional parameter only applicable to *nix
+        "multipath" is an optional parameter only applicable to *nix
             which indicates that the entire list of config dirs should be
             returned. By default, the first item from XDG_CONFIG_DIRS is
             returned, or '/etc/xdg/<AppName>', if XDG_CONFIG_DIRS is not set
@@ -204,7 +204,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False
         Win *:      same as site_data_dir
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
 
-    For Unix, this is using the $XDG_CONFIG_DIRS[0] default, if returnlist=False
+    For Unix, this is using the $XDG_CONFIG_DIRS[0] default, if multipath=False
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
@@ -214,7 +214,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False
             path = os.path.join(path, version)
     else:
         # XDG default for $XDG_CONFIG_DIRS
-        # only first, if returnlist is False
+        # only first, if multipath is False
         path = os.getenv('XDG_CONFIG_DIRS', '/etc/xdg')
         pathlist = [ os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep) ]
         if appname:
@@ -222,7 +222,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, returnlist=False
                 appname = os.path.join(appname, version)
             pathlist = [ os.sep.join([x, appname]) for x in pathlist ]
 
-        if returnlist:
+        if multipath:
             path = os.pathsep.join(pathlist)
         else:
             path = pathlist[0]
@@ -331,12 +331,12 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
     def __init__(self, appname, appauthor=None, version=None,
-                    roaming=False, returnlist=False):
+                    roaming=False, multipath=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
         self.roaming = roaming
-        self.returnlist = returnlist
+        self.multipath = multipath
     @property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
@@ -344,7 +344,7 @@ class AppDirs(object):
     @property
     def site_data_dir(self):
         return site_data_dir(self.appname, self.appauthor,
-            version=self.version, returnlist=self.returnlist)
+            version=self.version, multipath=self.multipath)
     @property
     def user_config_dir(self):
         return user_config_dir(self.appname, self.appauthor,
@@ -352,7 +352,7 @@ class AppDirs(object):
     @property
     def site_config_dir(self):
         return site_data_dir(self.appname, self.appauthor,
-            version=self.version, returnlist=self.returnlist)
+            version=self.version, multipath=self.multipath)
     @property
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
