@@ -82,7 +82,7 @@ On Linux::
     '/home/trentm/.local/share/SuperApp
     >>> site_data_dir(appname, appauthor)
     '/usr/local/share/SuperApp'
-    >>> site_data_dir(appname, appauthor, returnlist=True)
+    >>> site_data_dir(appname, appauthor, multipath=True)
     '/usr/local/share/SuperApp:/usr/share/SuperApp'
     >>> user_cache_dir(appname, appauthor)
     '/home/trentm/.cache/SuperApp'
@@ -93,7 +93,7 @@ On Linux::
     >>> site_config_dir(appname)
     '/etc/xdg/SuperApp'
     >>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'
-    >>> site_config_dir(appname, returnlist=True)
+    >>> site_config_dir(appname, multipath=True)
     '/etc/SuperApp:/usr/local/etc/SuperApp'
 
 
