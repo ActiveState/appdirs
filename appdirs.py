@@ -456,8 +456,9 @@ if __name__ == "__main__":
     appname = "MyApp"
     appauthor = "MyCompany"
 
-    props = ("user_data_dir", "site_data_dir", "user_cache_dir",
-        "user_log_dir")
+    props = ("user_data_dir", "site_data_dir",
+             "user_config_dir", "site_config_dir",
+             "user_cache_dir", "user_log_dir")
 
     print("-- app dirs (without optional 'version')")
     dirs = AppDirs(appname, appauthor, version="1.0")
@@ -468,3 +469,9 @@ if __name__ == "__main__":
     dirs = AppDirs(appname, appauthor)
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
+
+    print("\n-- app dirs (with optional 'appauthor')")
+    dirs = AppDirs(appname)
+    for prop in props:
+        print("%s: %s" % (prop, getattr(dirs, prop)))
+
