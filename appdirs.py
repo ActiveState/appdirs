@@ -58,7 +58,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
     That means, by deafult "~/.local/share/<AppName>".
     """
-    if sys.platform.startswith("win"):
+    if sys.platform == "win32":
         if appauthor is None:
             appauthor = appname
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
@@ -108,7 +108,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
-    if sys.platform.startswith("win"):
+    if sys.platform == "win32":
         if appauthor is None:
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
@@ -168,7 +168,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
     That means, by deafult "~/.local/share/<AppName>".
     """
-    if sys.platform.startswith("win") or sys.platform == "darwin":
+    if sys.platform in [ "win32", "darwin" ]:
         path = user_data_dir(appname, appauthor, None, roaming)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
@@ -208,7 +208,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
-    if (sys.platform.startswith("win")) or (sys.platform == 'darwin'):
+    if sys.platform in [ "win32", "darwin" ]:
         path = site_data_dir(appname, appauthor)
         if appname and version:
             path = os.path.join(path, version)
@@ -260,7 +260,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     OPINION: This function appends "Cache" to the `CSIDL_LOCAL_APPDATA` value.
     This can be disabled with the `opinion=False` option.
     """
-    if sys.platform.startswith("win"):
+    if sys.platform == "win32":
         if appauthor is None:
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
