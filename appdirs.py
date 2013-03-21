@@ -470,7 +470,7 @@ if __name__ == "__main__":
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
 
-    print("\n-- app dirs (with optional 'appauthor')")
+    print("\n-- app dirs (without optional 'appauthor')")
     dirs = AppDirs(appname)
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
