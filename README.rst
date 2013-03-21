@@ -1,3 +1,6 @@
+.. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
+    :target: http://travis-ci.org/ActiveState/appdirs
+
 the problem
 ===========
 
