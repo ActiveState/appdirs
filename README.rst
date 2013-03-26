@@ -32,7 +32,7 @@ This kind of thing is what the ``appdirs`` module is for. ``appdirs`` will
 help you choose an appropriate:
 
 - user data dir (``user_data_dir``)
-- user donfig dir (``user_donfig_dir``)
+- user config dir (``user_config_dir``)
 - user cache dir (``user_cache_dir``)
 - site data dir (``site_data_dir``)
 - site config dir (``site_config_dir``)
