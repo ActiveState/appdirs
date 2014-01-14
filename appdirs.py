@@ -396,7 +396,7 @@ def _get_win_folder_with_pywin32(csidl_name):
 
         # Downgrade to short path name if have highbit chars. See
         # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-        if [c for c in dir if ord(c) > 255]:
+        if any(ord(c) > 255 for c in dir):
             try:
                 import win32api
                 dir = win32api.GetShortPathName(dir)
@@ -420,11 +420,10 @@ def _get_win_folder_with_ctypes(csidl_name):
 
     # Downgrade to short path name if have highbit chars. See
     # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-    if [c for f in buf if ord(c) > 255]:
+    if any(ord(c) > 255 for c in buf):
         buf2 = ctypes.create_unicode_buffer(1024)
         if ctypes.windll.kernel32.GetShortPathNameW(buf.value, buf2, 1024):
             buf = buf2
-
     return buf.value
 
 if sys.platform == "win32":
