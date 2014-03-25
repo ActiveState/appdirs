@@ -7,6 +7,7 @@ if sys.version_info[0] < 3:
 else:
     STRING_TYPE = str
 
+
 class Test_AppDir(unittest.TestCase):
     def test_metadata(self):
         self.assertTrue(hasattr(appdirs, "__version__"))
@@ -29,5 +30,5 @@ class Test_AppDir(unittest.TestCase):
         self.assertIsInstance(dirs.user_cache_dir, STRING_TYPE)
         self.assertIsInstance(dirs.user_log_dir, STRING_TYPE)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     unittest.main()
