@@ -2,43 +2,12 @@
 import sys
 import os
 import os.path
-from distutils.core import setup, Command
+from setuptools import setup
 import appdirs
 
-requires_list = []
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
-else:
-    if sys.version_info <= (2, 6):
-        requires_list.append("unittest2")
-
-
-class RunTests(Command):
-    """New setup.py command to run all tests for the package.
-    """
-    description = "run all tests for the package"
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        test_modules = ["test.%s" % filename.replace('.py', '')
-            for filename in os.listdir('test')
-            if filename.endswith('.py') and filename.startswith('test_')]
-        for mod in test_modules:
-            __import__(mod)
-
-        suite = unittest.TestSuite()
-        for mod in [sys.modules[modname] for modname in test_modules]:
-            suite.addTest(unittest.TestLoader().loadTestsFromModule(mod))
-        unittest.TextTestRunner(verbosity=2).run(suite)
+tests_require = []
+if sys.version_info < (2, 7):
+    tests_require.append("unittest2")
 
 
 def read(fname):
@@ -53,7 +22,6 @@ setup(name='appdirs',
     description='A small Python module for determining appropriate " + \
         "platform-specific dirs, e.g. a "user data dir".',
     long_description=read('README.rst') + '\n' + read('CHANGES.rst'),
-    cmdclass={'test': RunTests},
     classifiers=[c.strip() for c in """
         Development Status :: 4 - Beta
         Intended Audience :: Developers
@@ -69,7 +37,8 @@ setup(name='appdirs',
         Programming Language :: Python :: 3.2
         Topic :: Software Development :: Libraries :: Python Modules
         """.split('\n') if c.strip()],
-    requires=requires_list,
+    test_suite='test.test_api',
+    tests_require=tests_require,
     keywords='application directory log cache user',
     author='Trent Mick',
     author_email='trentm@gmail.com',
