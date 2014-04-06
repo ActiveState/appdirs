@@ -25,6 +25,22 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     unicode = str
 
+if sys.platform.startswith('java'):
+    import platform
+    os_name = platform.java_ver()[3][0]
+    if os_name.startswith('Windows'): # "Windows XP", "Windows 7", etc.
+        system = 'win32'
+    elif os_name.startswith('Mac'): # "Mac OS X", etc.
+        system = 'darwin'
+    else: # "Linux", "SunOS", "FreeBSD", etc.
+        # Setting this to "linux2" is not ideal, but only Windows or Mac
+        # are actually checked for and the rest of the module expects
+        # *sys.platform* style strings.
+        system = 'linux2'
+else:
+    system = sys.platform
+
+
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
@@ -58,7 +74,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
     That means, by default "~/.local/share/<AppName>".
     """
-    if sys.platform == "win32":
+    if system == "win32":
         if appauthor is None:
             appauthor = appname
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
@@ -68,7 +84,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
-    elif sys.platform == 'darwin':
+    elif system == 'darwin':
         path = os.path.expanduser('~/Library/Application Support/')
         if appname:
             path = os.path.join(path, appname)
@@ -112,7 +128,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
-    if sys.platform == "win32":
+    if system == "win32":
         if appauthor is None:
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
@@ -121,7 +137,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
-    elif sys.platform == 'darwin':
+    elif system == 'darwin':
         path = os.path.expanduser('/Library/Application Support')
         if appname:
             path = os.path.join(path, appname)
@@ -176,7 +192,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME.
     That means, by deafult "~/.config/<AppName>".
     """
-    if sys.platform in ["win32", "darwin"]:
+    if system in ["win32", "darwin"]:
         path = user_data_dir(appname, appauthor, None, roaming)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
@@ -217,7 +233,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
-    if sys.platform in ["win32", "darwin"]:
+    if system in ["win32", "darwin"]:
         path = site_data_dir(appname, appauthor)
         if appname and version:
             path = os.path.join(path, version)
@@ -271,7 +287,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     OPINION: This function appends "Cache" to the `CSIDL_LOCAL_APPDATA` value.
     This can be disabled with the `opinion=False` option.
     """
-    if sys.platform == "win32":
+    if system == "win32":
         if appauthor is None:
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
@@ -282,7 +298,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
                 path = os.path.join(path, appname)
             if opinion:
                 path = os.path.join(path, "Cache")
-    elif sys.platform == 'darwin':
+    elif system == 'darwin':
         path = os.path.expanduser('~/Library/Caches')
         if appname:
             path = os.path.join(path, appname)
@@ -327,11 +343,11 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     value for Windows and appends "log" to the user cache dir for Unix.
     This can be disabled with the `opinion=False` option.
     """
-    if sys.platform == "darwin":
+    if system == "darwin":
         path = os.path.join(
             os.path.expanduser('~/Library/Logs'),
             appname)
-    elif sys.platform == "win32":
+    elif system == "win32":
         path = user_data_dir(appname, appauthor, version)
         version = False
         if opinion:
@@ -463,7 +479,7 @@ def _get_win_folder_with_ctypes(csidl_name):
 
     return buf.value
 
-if sys.platform == "win32":
+if system == "win32":
     try:
         import win32com.shell
         _get_win_folder = _get_win_folder_with_pywin32
