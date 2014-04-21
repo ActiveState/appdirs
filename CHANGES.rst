@@ -1,6 +1,10 @@
 appdirs Changelog
 =================
 
+appdirs 1.4.0
+-------------
+- ...
+
 appdirs 1.3.0
 -------------
 - [Unix, issue 16] Conform to XDG standard, instead of breaking it for
