@@ -482,7 +482,7 @@ def _get_win_folder_with_ctypes(csidl_name):
 def _get_win_folder_with_jna(csidl_name):
     import array
     from com.sun import jna
-    from com.sun.jan.platform import win32
+    from com.sun.jna.platform import win32
     
     buf = array.zeros('c', win32.WinDef.MAX_PATH * 2)
     shell = win32.Shell32.INSTANCE
