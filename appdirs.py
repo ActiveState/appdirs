@@ -479,16 +479,45 @@ def _get_win_folder_with_ctypes(csidl_name):
 
     return buf.value
 
+def _get_win_folder_with_jna(csidl_name):
+    import array
+    from com.sun import jna
+    from com.sun.jan.platform import win32
+    
+    buf = array.zeros('c', win32.WinDef.MAX_PATH * 2)
+    shell = win32.Shell32.INSTANCE
+    shell.SHGetFolderPath(None, getattr(win32.ShlObj, csidl_name), None, win32.ShlObj.SHGFP_TYPE_CURRENT, buf)
+    dir = jna.Native.toString(buf.tostring()).rstrip(u"\0")
+    
+    # Downgrade to short path name if have highbit chars. See
+    # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
+    has_high_char = False
+    for c in dir:
+        if ord(c) > 255:
+            has_high_char = True
+            break
+    if has_high_char:
+        buf = array.zeros('c', win32.WinDef.MAX_PATH * 2)
+        kernel = win32.Kernel32.INSTANCE
+        if kernal.GetShortPathName(dir, buf, win32.WinDef.MAX_PATH * 2):
+            dir = jna.Native.toString(buf.tostring()).rstrip(u"\0")
+    
+    return dir
+    
 if system == "win32":
     try:
         import win32com.shell
         _get_win_folder = _get_win_folder_with_pywin32
     except ImportError:
         try:
-            import ctypes
+            from ctypes import windll
             _get_win_folder = _get_win_folder_with_ctypes
         except ImportError:
-            _get_win_folder = _get_win_folder_from_registry
+            try:
+                import com.sun.jna
+                _get_win_folder = _get_win_folder_with_jna
+            except ImportError:
+                _get_win_folder = _get_win_folder_from_registry
 
 
 #---- self test code
