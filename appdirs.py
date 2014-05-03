@@ -31,9 +31,10 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -63,7 +64,10 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
         path = os.path.normpath(_get_win_folder(const))
         if appname:
-            path = os.path.join(path, appauthor, appname)
+            if appauthor is not False:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
     elif sys.platform == 'darwin':
         path = os.path.expanduser('~/Library/Application Support/')
         if appname:
@@ -82,9 +86,10 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -112,7 +117,10 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
         if appname:
-            path = os.path.join(path, appauthor, appname)
+            if appauthor is not False:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
     elif sys.platform == 'darwin':
         path = os.path.expanduser('/Library/Application Support')
         if appname:
@@ -144,9 +152,10 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -183,9 +192,10 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -233,9 +243,10 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -265,7 +276,10 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
         if appname:
-            path = os.path.join(path, appauthor, appname)
+            if appauthor is not False:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
             if opinion:
                 path = os.path.join(path, "Cache")
     elif sys.platform == 'darwin':
@@ -286,9 +300,10 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 
         "appname" is the name of application.
             If None, just the system directory is returned.
-        "appauthor" (only required and used on Windows) is the name of the
+        "appauthor" (only used on Windows) is the name of the
             appauthor or distributing body for this application. Typically
-            it is the owning company name. This falls back to appname.
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
         "version" is an optional version path element to append to the
             path. You might want to use this if you want multiple versions
             of your app to be able to run independently. If used, this
@@ -482,5 +497,10 @@ if __name__ == "__main__":
 
     print("\n-- app dirs (without optional 'appauthor')")
     dirs = AppDirs(appname)
+    for prop in props:
+        print("%s: %s" % (prop, getattr(dirs, prop)))
+
+    print("\n-- app dirs (with disabled 'appauthor')")
+    dirs = AppDirs(appname, appauthor=False)
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
