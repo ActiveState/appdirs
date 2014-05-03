@@ -3,6 +3,7 @@ appdirs Changelog
 
 appdirs 1.4.0
 -------------
+- [PR #42] AppAuthor is now optional on Windows
 - ...
 
 appdirs 1.3.0
