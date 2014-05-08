@@ -4,6 +4,8 @@ appdirs Changelog
 appdirs 1.4.0
 -------------
 - [PR #42] AppAuthor is now optional on Windows
+- [issue 41] Support Jython on Windows, Mac, and Unix-like platforms. Windows
+  support requires `JNA <https://github.com/twall/jna>`_.
 - ...
 
 appdirs 1.3.0
