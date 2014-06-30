@@ -153,7 +153,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
 
         if multipath:
-            path = os.pathsep.join(pathlist)
+            return pathlist
         else:
             path = pathlist[0]
         return path
@@ -248,7 +248,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
 
         if multipath:
-            path = os.pathsep.join(pathlist)
+            return pathlist
         else:
             path = pathlist[0]
     return path
