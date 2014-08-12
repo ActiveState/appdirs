@@ -389,7 +389,7 @@ class AppDirs(object):
 
     @property
     def site_config_dir(self):
-        return site_data_dir(self.appname, self.appauthor,
+        return site_config_dir(self.appname, self.appauthor,
                              version=self.version, multipath=self.multipath)
 
     @property
