@@ -1,6 +1,11 @@
 appdirs Changelog
 =================
 
+dev
+---
+
+- [PR #44] Fix incorrect behaviour of the site_config_dir method
+
 appdirs 1.4.0
 -------------
 - [PR #42] AppAuthor is now optional on Windows
