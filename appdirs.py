@@ -531,6 +531,8 @@ if __name__ == "__main__":
              "user_config_dir", "site_config_dir",
              "user_cache_dir", "user_log_dir")
 
+    print("-- app dirs %s --" % __version__)
+
     print("-- app dirs (with optional 'version')")
     dirs = AppDirs(appname, appauthor, version="1.0")
     for prop in props:
