@@ -4,7 +4,7 @@ appdirs Changelog
 appdirs 1.4.1 (dev)
 -------------------
 
-- ...
+- [issue #38] Fix _winreg import on Windows Py3
 
 appdirs 1.4.0
 -------------
