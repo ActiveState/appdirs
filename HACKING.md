@@ -5,7 +5,7 @@
 ensure correct version on CHANGES.md and appdirs.py, and:
 
 ```
-python setup.py sdist register upload
+python setup.py sdist bdist_wheel register upload
 ```
 
 ## docker image
