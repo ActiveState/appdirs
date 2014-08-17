@@ -2,10 +2,10 @@
 
 ## release
 
-ensure correct version on CHANGES.md and appdirs.py, and:
+ensure correct version in CHANGES.md and appdirs.py, and:
 
 ```
-python setup.py sdist bdist_wheel register upload
+python setup.py register sdist bdist_wheel upload
 ```
 
 ## docker image
