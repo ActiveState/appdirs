@@ -54,13 +54,13 @@ On Mac OS X::
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
     >>> user_data_dir(appname, appauthor)
-    '/Users/Acme/Library/Application Support/SuperApp'
+    '/Users/trentm/Library/Application Support/SuperApp'
     >>> site_data_dir(appname, appauthor)
     '/Library/Application Support/SuperApp'
     >>> user_cache_dir(appname, appauthor)
-    '/Users/Acme/Library/Caches/SuperApp'
+    '/Users/trentm/Library/Caches/SuperApp'
     >>> user_log_dir(appname, appauthor)
-    '/Users/Acme/Library/Logs/SuperApp'
+    '/Users/trentm/Library/Logs/SuperApp'
 
 On Windows 7::
 
@@ -68,13 +68,13 @@ On Windows 7::
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
     >>> user_data_dir(appname, appauthor)
-    'C:\\Users\\Acme\\AppData\\Local\\Acme\\SuperApp'
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
     >>> user_data_dir(appname, appauthor, roaming=True)
-    'C:\\Users\\Acme\\AppData\\Roaming\\Acme\\SuperApp'
+    'C:\\Users\\trentm\\AppData\\Roaming\\Acme\\SuperApp'
     >>> user_cache_dir(appname, appauthor)
-    'C:\\Users\\Acme\\AppData\\Local\\Acme\\SuperApp\\Cache'
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Cache'
     >>> user_log_dir(appname, appauthor)
-    'C:\\Users\\Acme\\AppData\\Local\\Acme\\SuperApp\\Logs'
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Logs'
 
 On Linux::
 
@@ -82,17 +82,17 @@ On Linux::
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
     >>> user_data_dir(appname, appauthor)
-    '/home/Acme/.local/share/SuperApp
+    '/home/trentm/.local/share/SuperApp
     >>> site_data_dir(appname, appauthor)
     '/usr/local/share/SuperApp'
     >>> site_data_dir(appname, appauthor, multipath=True)
     '/usr/local/share/SuperApp:/usr/share/SuperApp'
     >>> user_cache_dir(appname, appauthor)
-    '/home/Acme/.cache/SuperApp'
+    '/home/trentm/.cache/SuperApp'
     >>> user_log_dir(appname, appauthor)
-    '/home/Acme/.cache/SuperApp/log'
+    '/home/trentm/.cache/SuperApp/log'
     >>> user_config_dir(appname)
-    '/home/Acme/.config/SuperApp'
+    '/home/trentm/.config/SuperApp'
     >>> site_config_dir(appname)
     '/etc/xdg/SuperApp'
     >>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'
@@ -108,13 +108,13 @@ On Linux::
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme")
     >>> dirs.user_data_dir
-    '/Users/Acme/Library/Application Support/SuperApp'
+    '/Users/trentm/Library/Application Support/SuperApp'
     >>> dirs.site_data_dir
     '/Library/Application Support/SuperApp'
     >>> dirs.user_cache_dir
-    '/Users/Acme/Library/Caches/SuperApp'
+    '/Users/trentm/Library/Caches/SuperApp'
     >>> dirs.user_log_dir
-    '/Users/Acme/Library/Logs/SuperApp'
+    '/Users/trentm/Library/Logs/SuperApp'
 
 
     
@@ -128,11 +128,11 @@ dirs::
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")
     >>> dirs.user_data_dir
-    '/Users/Acme/Library/Application Support/SuperApp/1.0'
+    '/Users/trentm/Library/Application Support/SuperApp/1.0'
     >>> dirs.site_data_dir
     '/Library/Application Support/SuperApp/1.0'
     >>> dirs.user_cache_dir
-    '/Users/Acme/Library/Caches/SuperApp/1.0'
+    '/Users/trentm/Library/Caches/SuperApp/1.0'
     >>> dirs.user_log_dir
-    '/Users/Acme/Library/Logs/SuperApp/1.0'
+    '/Users/trentm/Library/Logs/SuperApp/1.0'
 
