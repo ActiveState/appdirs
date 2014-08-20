@@ -29,13 +29,14 @@ setup(
         License :: OSI Approved :: MIT License
         Operating System :: OS Independent
         Programming Language :: Python :: 2
-        Programming Language :: Python :: 2.4
-        Programming Language :: Python :: 2.5
         Programming Language :: Python :: 2.6
         Programming Language :: Python :: 2.7
         Programming Language :: Python :: 3
-        Programming Language :: Python :: 3.1
         Programming Language :: Python :: 3.2
+        Programming Language :: Python :: 3.3
+        Programming Language :: Python :: 3.4
+        Programming Language :: Python :: Implementation :: PyPy
+        Programming Language :: Python :: Implementation :: CPython
         Topic :: Software Development :: Libraries :: Python Modules
         """.split('\n') if c.strip()],
     test_suite='test.test_api',
