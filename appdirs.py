@@ -117,7 +117,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             returned, or '/usr/local/share/<AppName>',
             if XDG_DATA_DIRS is not set
 
-    Typical user data directories are:
+    Typical site data directories are:
         Mac OS X:   /Library/Application Support/<AppName>
         Unix:       /usr/local/share/<AppName> or /usr/share/<AppName>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
@@ -184,7 +184,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
             <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
             for a discussion of issues.
 
-    Typical user data directories are:
+    Typical user config directories are:
         Mac OS X:               same as user_data_dir
         Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
@@ -222,7 +222,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
             returned. By default, the first item from XDG_CONFIG_DIRS is
             returned, or '/etc/xdg/<AppName>', if XDG_CONFIG_DIRS is not set
 
-    Typical user data directories are:
+    Typical site config directories are:
         Mac OS X:   same as site_data_dir
         Unix:       /etc/xdg/<AppName> or $XDG_CONFIG_DIRS[i]/<AppName> for each value in
                     $XDG_CONFIG_DIRS
@@ -329,7 +329,7 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
             "Logs" to the base app data dir for Windows, and "log" to the
             base cache dir for Unix. See discussion below.
 
-    Typical user cache directories are:
+    Typical user log directories are:
         Mac OS X:   ~/Library/Logs/<AppName>
         Unix:       ~/.cache/<AppName>/log  # or under $XDG_CACHE_HOME if defined
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Logs
