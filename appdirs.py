@@ -185,15 +185,19 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
             for a discussion of issues.
 
     Typical user config directories are:
-        Mac OS X:               same as user_data_dir
+        Mac OS X:               ~/Library/Preferences/<AppName>
         Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
 
     For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME.
     That means, by default "~/.config/<AppName>".
     """
-    if system in ["win32", "darwin"]:
+    if system == "win32":
         path = user_data_dir(appname, appauthor, None, roaming)
+    elif system == 'darwin':
+        path = os.path.expanduser('~/Library/Preferences/')
+        if appname:
+            path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
         if appname:
@@ -233,10 +237,14 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
 
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
-    if system in ["win32", "darwin"]:
+    if system == 'win32':
         path = site_data_dir(appname, appauthor)
         if appname and version:
             path = os.path.join(path, version)
+    elif system == 'darwin':
+        path = os.path.expanduser('/Library/Preferences')
+        if appname:
+            path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_CONFIG_DIRS
         # only first, if multipath is False
