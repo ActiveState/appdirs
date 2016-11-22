@@ -355,7 +355,7 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
             path = os.path.join(
                 os.path.expanduser('~/Library/Logs'),
                 appauthor, appname)
-         else:
+        else:
             path = os.path.join(
                 os.path.expanduser('~/Library/Logs'),
                 appname)
