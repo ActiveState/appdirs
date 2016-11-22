@@ -143,9 +143,9 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
     elif system == 'darwin':
         path = os.path.expanduser('/Library/Application Support')
         if appauthor:
-                path = os.path.join(path, appauthor, appname)
-            else:
-                path = os.path.join(path, appname)
+            path = os.path.join(path, appauthor, appname)
+        else:
+            path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_DATA_DIRS
         # only first, if multipath is False
@@ -306,9 +306,9 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Caches')
         if appauthor:
-                path = os.path.join(path, appauthor, appname)
-            else:
-                path = os.path.join(path, appname)
+            path = os.path.join(path, appauthor, appname)
+        else:
+            path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
         if appname:
