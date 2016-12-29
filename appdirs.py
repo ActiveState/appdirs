@@ -406,8 +406,8 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
-    def __init__(self, appname, appauthor=None, version=None, roaming=False,
-                 multipath=False):
+    def __init__(self, appname=None, appauthor=None, version=None,
+            roaming=False, multipath=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
