@@ -19,7 +19,7 @@ appdirs 1.3.0
   everybody
 - [Unix] Removes gratuitous case mangling of the case, since \*nix-es are
   usually case sensitive, so mangling is not wise
-- [Unix] Fixes the uterly wrong behaviour in ``site_data_dir``, return result
+- [Unix] Fixes the utterly wrong behaviour in ``site_data_dir``, return result
   based on XDG_DATA_DIRS and make room for respecting the standard which
   specifies XDG_DATA_DIRS is a multiple-value variable
 - [Issue 6] Add ``*_config_dir`` which are distinct on nix-es, according to
