@@ -1,10 +1,11 @@
 appdirs Changelog
 =================
 
-appdirs 1.4.1 (dev)
--------------------
+appdirs 1.4.1
+-------------
 
 - [issue #38] Fix _winreg import on Windows Py3
+- [issue #55] Make appname optional
 
 appdirs 1.4.0
 -------------
