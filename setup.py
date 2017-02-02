@@ -35,6 +35,7 @@ setup(
         Programming Language :: Python :: 3.2
         Programming Language :: Python :: 3.3
         Programming Language :: Python :: 3.4
+        Programming Language :: Python :: 3.5
         Programming Language :: Python :: Implementation :: PyPy
         Programming Language :: Python :: Implementation :: CPython
         Topic :: Software Development :: Libraries :: Python Modules
@@ -44,8 +45,8 @@ setup(
     keywords='application directory log cache user',
     author='Trent Mick',
     author_email='trentm@gmail.com',
-    maintainer='Trent Mick; Sridhar Ratnakumar',
-    maintainer_email='trentm@gmail.com; github@srid.name',
+    maintainer='Trent Mick; Sridhar Ratnakumar; Jeff Rouse',
+    maintainer_email='trentm@gmail.com; github@srid.name; jr@its.to',
     url='http://github.com/ActiveState/appdirs',
     license='MIT',
     py_modules=["appdirs"],
