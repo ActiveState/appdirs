@@ -20,8 +20,8 @@ def read(fname):
 setup(
     name='appdirs',
     version=appdirs.__version__,
-    description='A small Python module for determining appropriate " + \
-        "platform-specific dirs, e.g. a "user data dir".',
+    description='A small Python module for determining appropriate ' + \
+        'platform-specific dirs, e.g. a "user data dir".',
     long_description=read('README.rst') + '\n' + read('CHANGES.rst'),
     classifiers=[c.strip() for c in """
         Development Status :: 4 - Beta
