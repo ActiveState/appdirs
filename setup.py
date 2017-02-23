@@ -2,8 +2,13 @@
 import sys
 import os
 import os.path
-from setuptools import setup
 import appdirs
+
+# Workaround setuptools circular dep
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 tests_require = []
 if sys.version_info < (2, 7):
@@ -36,6 +41,7 @@ setup(
         Programming Language :: Python :: 3.3
         Programming Language :: Python :: 3.4
         Programming Language :: Python :: 3.5
+        Programming Language :: Python :: 3.6
         Programming Language :: Python :: Implementation :: PyPy
         Programming Language :: Python :: Implementation :: CPython
         Topic :: Software Development :: Libraries :: Python Modules
