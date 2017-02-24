@@ -2,7 +2,11 @@
 import sys
 import os
 import os.path
-from setuptools import setup
+# appdirs is a dependency of setuptools, so allow installing without it.
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 import appdirs
 
 tests_require = []
