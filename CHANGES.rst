@@ -1,9 +1,14 @@
 appdirs Changelog
 =================
 
+appdirs 1.4.2
+-------------
+- [PR #84] Allow installing without setuptools
+- [PR #86] Fix string delimiters in setup.py description
+- Add Python 3.6 support
+
 appdirs 1.4.1
 -------------
-
 - [issue #38] Fix _winreg import on Windows Py3
 - [issue #55] Make appname optional
 
