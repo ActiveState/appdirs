@@ -1,6 +1,11 @@
 appdirs Changelog
 =================
 
+appdirs 1.4.3
+-------------
+- [PR #76] Python 3.6 invalid escape sequence deprecation fixes
+- Fix for Python 3.6 support
+
 appdirs 1.4.2
 -------------
 - [PR #84] Allow installing without setuptools
