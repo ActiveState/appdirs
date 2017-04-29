@@ -7,7 +7,7 @@ try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
-import appdirs
+import ast
 
 tests_require = []
 if sys.version_info < (2, 7):
@@ -21,9 +21,16 @@ def read(fname):
     return out
 
 
+# Do not import `appdirs` yet, lest we import some random version on sys.path.
+for line in read("appdirs.py").splitlines():
+    if line.startswith("__version__"):
+        version = ast.literal_eval(line.split("=", 1)[1].strip())
+        break
+
+
 setup(
     name='appdirs',
-    version=appdirs.__version__,
+    version=version,
     description='A small Python module for determining appropriate ' + \
         'platform-specific dirs, e.g. a "user data dir".',
     long_description=read('README.rst') + '\n' + read('CHANGES.rst'),
