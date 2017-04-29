@@ -1,6 +1,14 @@
 appdirs Changelog
 =================
 
+appdirs 1.4.4
+-------------
+- [PR #92] Don't import appdirs from setup.py which
+fixes #91 - Don't get version from appdirs.__version__ 
+
+Project officially classified as Stable which is important
+for inclusion in other distros such as ActivePython.
+
 appdirs 1.4.3
 -------------
 - [PR #76] Python 3.6 invalid escape sequence deprecation fixes
