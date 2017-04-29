@@ -35,7 +35,7 @@ setup(
         'platform-specific dirs, e.g. a "user data dir".',
     long_description=read('README.rst') + '\n' + read('CHANGES.rst'),
     classifiers=[c.strip() for c in """
-        Development Status :: 4 - Beta
+        Development Status :: 5 - Production/Stable
         Intended Audience :: Developers
         License :: OSI Approved :: MIT License
         Operating System :: OS Independent
