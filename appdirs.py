@@ -80,14 +80,17 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
         path = os.path.normpath(_get_win_folder(const))
         if appname:
-            if appauthor is not False:
+            if appauthor:
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Application Support/')
         if appname:
-            path = os.path.join(path, appname)
+            if appauthor:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share"))
         if appname:
@@ -133,13 +136,15 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
         if appname:
-            if appauthor is not False:
+            if appauthor:
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
     elif system == 'darwin':
         path = os.path.expanduser('/Library/Application Support')
-        if appname:
+        if appauthor:
+            path = os.path.join(path, appauthor, appname)
+        else:
             path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_DATA_DIRS
@@ -292,7 +297,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
             appauthor = appname
         path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
         if appname:
-            if appauthor is not False:
+            if appauthor:
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
@@ -300,7 +305,9 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
                 path = os.path.join(path, "Cache")
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Caches')
-        if appname:
+        if appauthor:
+            path = os.path.join(path, appauthor, appname)
+        else:
             path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
@@ -386,9 +393,14 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     This can be disabled with the `opinion=False` option.
     """
     if system == "darwin":
-        path = os.path.join(
-            os.path.expanduser('~/Library/Logs'),
-            appname)
+        if appauthor:
+            path = os.path.join(
+                os.path.expanduser('~/Library/Logs'),
+                appauthor, appname)
+        else:
+            path = os.path.join(
+                os.path.expanduser('~/Library/Logs'),
+                appname)
     elif system == "win32":
         path = user_data_dir(appname, appauthor, version)
         version = False
