@@ -6,21 +6,32 @@
 """Utilities for determining application-specific dirs.
 
 See <http://github.com/ActiveState/appdirs> for details and usage.
+
+Notes
+-----
+  The paths this module returns are based on the following docs:
+    - For Windows, it's based on article Q310294[1] and KNOWNFOLDERID[2].
+    - For OS X, it's based on Apple's File System Basics docs[3].
+    - For *nix, it's based on the XDG Base Directory Specification[4], Debian's
+      state directory proposal[5] and xdg-user-dirs tool.[6]
+
+References
+----------
+.. [1] https://support.microsoft.com/en-us/kb310294
+.. [2] https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457
+.. [3] https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html
+.. [4] https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+.. [5] https://wiki.debian.org/XDGBaseDirectorySpecification#state
+.. [6] https://wiki.freedesktop.org/www/Software/xdg-user-dirs/
 """
-# Dev Notes:
-# - MSDN on where to store app data files:
-#   http://support.microsoft.com/default.aspx?scid=kb;en-us;310294#XSLTH3194121123120121120120
-#   https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457(v=vs.85).aspx
-# - Mac OS X:
-#   https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html
-# - XDG spec for Un*x: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+
+import sys
+import os
+
 
 __version__ = "1.4.4"
 __version_info__ = tuple(int(segment) for segment in __version__.split("."))
 
-
-import sys
-import os
 
 PY3 = sys.version_info[0] == 3
 
@@ -41,7 +52,6 @@ if sys.platform.startswith('java'):
         system = 'linux2'
 else:
     system = sys.platform
-
 
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
@@ -411,7 +421,7 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
     def __init__(self, appname=None, appauthor=None, version=None,
-            roaming=False, multipath=False):
+                 roaming=False, multipath=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
