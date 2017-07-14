@@ -76,7 +76,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
             for a discussion of issues.
 
     Typical user data directories are:
-        Mac OS X:               ~/Library/Application Support/<AppName>
+        Mac OS X:               ~/Library/Application Support/<AppAuthor>/<AppName>
         Unix:                   ~/.local/share/<AppName>    # or in $XDG_DATA_HOME, if defined
         Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
@@ -93,21 +93,23 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
             path = os.getenv('APPDATA', _get_win_folder_from_knownid('{3EB685DB-65F9-4CF6-A03A-E3EF65729F3D}'))
         else:
             path = os.getenv('LOCALAPPDATA', _get_win_folder_from_knownid('{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}'))
-        if appname:
-            if appauthor:
-                path = os.path.join(path, appauthor, appname)
-            else:
-                path = os.path.join(path, appname)
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Application Support/')
-        if appname:
-            path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share"))
         if appname:
+            if version:
+                path = os.path.join(path, appname, str(version))
+            else:
+                path = os.path.join(path, appname)
+        return path
+    if appname:
+        if appauthor:
+            path = os.path.join(path, appauthor, appname)
+        else:
             path = os.path.join(path, appname)
-    if appname and version:
-        path = os.path.join(path, str(version))
+        if version:
+            path = os.path.join(path, str(version))
     return path
 
 
@@ -132,7 +134,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             if XDG_DATA_DIRS is not set
 
     Typical site data directories are:
-        Mac OS X:   /Library/Application Support/<AppName>
+        Mac OS X:   /Library/Application Support/<AppAuthor>/<AppName>
         Unix:       /usr/local/share/<AppName> or /usr/share/<AppName>
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
@@ -146,15 +148,8 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         if appauthor is None:
             appauthor = appname
         path = os.getenv('ALLUSERSPROFILE', _get_win_folder_from_knownid('{62AB5D82-FDC1-4DC3-A9DD-070D1D495D97}'))
-        if appname:
-            if appauthor is not False:
-                path = os.path.join(path, appauthor, appname)
-            else:
-                path = os.path.join(path, appname)
     elif system == 'darwin':
         path = os.path.expanduser('/Library/Application Support')
-        if appname:
-            path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_DATA_DIRS
         # only first, if multipath is False
@@ -162,6 +157,8 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
                          os.pathsep.join(['/usr/local/share', '/usr/share']))
         pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         if appname:
+            if appauthor:
+                appname = os.path.join(appauthor, appname)
             if version:
                 appname = os.path.join(appname, str(version))
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
@@ -172,8 +169,13 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
             path = pathlist[0]
         return path
 
-    if appname and version:
-        path = os.path.join(path, str(version))
+    if appname:
+        if appauthor:
+            path = os.path.join(path, appauthor, appname)
+        else:
+            path = os.path.join(path, appname)
+        if version:
+            path = os.path.join(path, str(version))
     return path
 
 
@@ -207,13 +209,14 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     That means, by default "~/.config/<AppName>".
     """
     if system in ["win32", "darwin"]:
-        path = user_data_dir(appname, appauthor, None, roaming)
+        return user_data_dir(appname, appauthor, version, roaming)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
         if appname:
-            path = os.path.join(path, appname)
-    if appname and version:
-        path = os.path.join(path, str(version))
+            if version:
+                path = os.path.join(path, appname, str(version))
+            else:
+                path = os.path.join(path, appname)
     return path
 
 
@@ -248,9 +251,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
     WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
     """
     if system in ["win32", "darwin"]:
-        path = site_data_dir(appname, appauthor)
-        if appname and version:
-            path = os.path.join(path, str(version))
+        return site_data_dir(appname, appauthor, version)
     else:
         # XDG default for $XDG_CONFIG_DIRS
         # only first, if multipath is False
@@ -306,7 +307,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
             appauthor = appname
         path = os.getenv('LOCALAPPDATA', _get_win_folder_from_knownid('{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}'))
         if appname:
-            if appauthor is not False:
+            if appauthor:
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
@@ -315,7 +316,10 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Caches')
         if appname:
-            path = os.path.join(path, appname)
+            if appauthor:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
         if appname:
@@ -357,13 +361,14 @@ def user_state_dir(appname=None, appauthor=None, version=None, roaming=False):
     That means, by default "~/.local/state/<AppName>".
     """
     if system in ["win32", "darwin"]:
-        path = user_data_dir(appname, appauthor, None, roaming)
+        return user_data_dir(appname, appauthor, version, roaming)
     else:
         path = os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))
         if appname:
-            path = os.path.join(path, appname)
-    if appname and version:
-        path = os.path.join(path, str(version))
+            if version:
+                path = os.path.join(path, appname, str(version))
+            else:
+                path = os.path.join(path, appname)
     return path
 
 
@@ -400,21 +405,22 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     This can be disabled with the `opinion=False` option.
     """
     if system == "darwin":
-        path = os.path.join(
-            os.path.expanduser('~/Library/Logs'),
-            appname)
+        path = os.path.expanduser('~/Library/Logs')
+        if appname:
+            if appauthor:
+                path = os.path.join(path, appauthor, appname)
+            else:
+                path = os.path.join(path, appname)
+            if version:
+                path = os.path.join(path, str(version))
     elif system == "win32":
-        path = user_data_dir(appname, appauthor, str(version))
-        version = False
+        path = user_data_dir(appname, appauthor, version)
         if opinion:
             path = os.path.join(path, "Logs")
     else:
-        path = user_cache_dir(appname, appauthor, str(version))
-        version = False
+        path = user_cache_dir(appname, appauthor, version)
         if opinion:
             path = os.path.join(path, "log")
-    if appname and version:
-        path = os.path.join(path, str(version))
     return path
 
 
@@ -464,7 +470,7 @@ class AppDirs(object):
                             version=self.version)
 
 
-#---- internal support stuff
+# internal support stuff
 
 def _get_win_folder_from_knownid(folderid, userhandle=0):
     """Get folder path from KNOWNFOLDERID.
