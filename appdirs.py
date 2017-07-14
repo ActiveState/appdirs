@@ -79,8 +79,10 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     if system == "win32":
         if appauthor is None:
             appauthor = appname
-        const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
-        path = os.path.normpath(_get_win_folder(const))
+        if roaming:
+            path = os.getenv('APPDATA', _get_win_folder_from_knownid('{3EB685DB-65F9-4CF6-A03A-E3EF65729F3D}'))
+        else:
+            path = os.getenv('LOCALAPPDATA', _get_win_folder_from_knownid('{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}'))
         if appname:
             if appauthor:
                 path = os.path.join(path, appauthor, appname)
@@ -133,7 +135,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
     if system == "win32":
         if appauthor is None:
             appauthor = appname
-        path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
+        path = os.getenv('ALLUSERSPROFILE', _get_win_folder_from_knownid('{62AB5D82-FDC1-4DC3-A9DD-070D1D495D97}'))
         if appname:
             if appauthor is not False:
                 path = os.path.join(path, appauthor, appname)
@@ -292,7 +294,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     if system == "win32":
         if appauthor is None:
             appauthor = appname
-        path = os.path.normpath(_get_win_folder("CSIDL_LOCAL_APPDATA"))
+        path = os.getenv('LOCALAPPDATA', _get_win_folder_from_knownid('{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}'))
         if appname:
             if appauthor is not False:
                 path = os.path.join(path, appauthor, appname)
@@ -454,123 +456,53 @@ class AppDirs(object):
 
 #---- internal support stuff
 
-def _get_win_folder_from_registry(csidl_name):
-    """This is a fallback technique at best. I'm not sure if using the
-    registry for this guarantees us the correct answer for all CSIDL_*
-    names.
+def _get_win_folder_from_knownid(folderid, userhandle=0):
+    """Get folder path from KNOWNFOLDERID.
+
+    Based of code by mkropat [https://gist.github.com/mkropat/7550097] licensed under MIT.
+
+    Params
+    ------
+    folderid:
+        A GUID listed at [https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457.aspx]
+    userhandle:
+        0 for current user, -1 for common/shared folder
     """
-    if PY3:
-      import winreg as _winreg
-    else:
-      import _winreg
-
-    shell_folder_name = {
-        "CSIDL_APPDATA": "AppData",
-        "CSIDL_COMMON_APPDATA": "Common AppData",
-        "CSIDL_LOCAL_APPDATA": "Local AppData",
-    }[csidl_name]
-
-    key = _winreg.OpenKey(
-        _winreg.HKEY_CURRENT_USER,
-        r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
-    )
-    dir, type = _winreg.QueryValueEx(key, shell_folder_name)
-    return dir
-
-
-def _get_win_folder_with_pywin32(csidl_name):
-    from win32com.shell import shellcon, shell
-    dir = shell.SHGetFolderPath(0, getattr(shellcon, csidl_name), 0, 0)
-    # Try to make this a unicode path because SHGetFolderPath does
-    # not return unicode strings when there is unicode data in the
-    # path.
-    try:
-        dir = unicode(dir)
-
-        # Downgrade to short path name if have highbit chars. See
-        # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-        has_high_char = False
-        for c in dir:
-            if ord(c) > 255:
-                has_high_char = True
-                break
-        if has_high_char:
-            try:
-                import win32api
-                dir = win32api.GetShortPathName(dir)
-            except ImportError:
-                pass
-    except UnicodeError:
-        pass
-    return dir
-
-
-def _get_win_folder_with_ctypes(csidl_name):
     import ctypes
+    from ctypes import windll, wintypes
+    from uuid import UUID
 
-    csidl_const = {
-        "CSIDL_APPDATA": 26,
-        "CSIDL_COMMON_APPDATA": 35,
-        "CSIDL_LOCAL_APPDATA": 28,
-    }[csidl_name]
 
-    buf = ctypes.create_unicode_buffer(1024)
-    ctypes.windll.shell32.SHGetFolderPathW(None, csidl_const, None, 0, buf)
+    class GUID(ctypes.Structure):
+        _fields_ = [
+            ("Data1", wintypes.DWORD),
+            ("Data2", wintypes.WORD),
+            ("Data3", wintypes.WORD),
+            ("Data4", wintypes.BYTE * 8)
+        ]
 
-    # Downgrade to short path name if have highbit chars. See
-    # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-    has_high_char = False
-    for c in buf:
-        if ord(c) > 255:
-            has_high_char = True
-            break
-    if has_high_char:
-        buf2 = ctypes.create_unicode_buffer(1024)
-        if ctypes.windll.kernel32.GetShortPathNameW(buf.value, buf2, 1024):
-            buf = buf2
+        def __init__(self, uuid_):
+            ctypes.Structure.__init__(self)
+            self.Data1, self.Data2, self.Data3, self.Data4[0], self.Data4[1], rest = uuid_.fields
+            for i in range(2, 8):
+                self.Data4[i] = rest>>(8 - i - 1)*8 & 0xff
 
-    return buf.value
+    _CoTaskMemFree = windll.ole32.CoTaskMemFree
+    _CoTaskMemFree.restype = None
+    _CoTaskMemFree.argtypes = [ctypes.c_void_p]
 
-def _get_win_folder_with_jna(csidl_name):
-    import array
-    from com.sun import jna
-    from com.sun.jna.platform import win32
+    _SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
+    _SHGetKnownFolderPath.argtypes = [
+        ctypes.POINTER(GUID), wintypes.DWORD, wintypes.HANDLE, ctypes.POINTER(ctypes.c_wchar_p)
+    ]
 
-    buf_size = win32.WinDef.MAX_PATH * 2
-    buf = array.zeros('c', buf_size)
-    shell = win32.Shell32.INSTANCE
-    shell.SHGetFolderPath(None, getattr(win32.ShlObj, csidl_name), None, win32.ShlObj.SHGFP_TYPE_CURRENT, buf)
-    dir = jna.Native.toString(buf.tostring()).rstrip("\0")
-
-    # Downgrade to short path name if have highbit chars. See
-    # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
-    has_high_char = False
-    for c in dir:
-        if ord(c) > 255:
-            has_high_char = True
-            break
-    if has_high_char:
-        buf = array.zeros('c', buf_size)
-        kernel = win32.Kernel32.INSTANCE
-        if kernel.GetShortPathName(dir, buf, buf_size):
-            dir = jna.Native.toString(buf.tostring()).rstrip("\0")
-
-    return dir
-
-if system == "win32":
-    try:
-        import win32com.shell
-        _get_win_folder = _get_win_folder_with_pywin32
-    except ImportError:
-        try:
-            from ctypes import windll
-            _get_win_folder = _get_win_folder_with_ctypes
-        except ImportError:
-            try:
-                import com.sun.jna
-                _get_win_folder = _get_win_folder_with_jna
-            except ImportError:
-                _get_win_folder = _get_win_folder_from_registry
+    fid = GUID(UUID(folderid))
+    pPath = ctypes.c_wchar_p()
+    if _SHGetKnownFolderPath(ctypes.byref(fid), 0, userhandle, ctypes.byref(pPath)) != 0:
+        raise WindowsError("Path not found for folderid: %s and userhandle: %s" % (folderid, userhandle))
+    path = pPath.value
+    _CoTaskMemFree(pPath)
+    return path
 
 
 #---- self test code
