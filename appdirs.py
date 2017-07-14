@@ -10,6 +10,7 @@ See <http://github.com/ActiveState/appdirs> for details and usage.
 # Dev Notes:
 # - MSDN on where to store app data files:
 #   http://support.microsoft.com/default.aspx?scid=kb;en-us;310294#XSLTH3194121123120121120120
+#   https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457(v=vs.85).aspx
 # - Mac OS X:
 #   https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html
 # - XDG spec for Un*x: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
@@ -81,7 +82,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
         const = roaming and "CSIDL_APPDATA" or "CSIDL_LOCAL_APPDATA"
         path = os.path.normpath(_get_win_folder(const))
         if appname:
-            if appauthor is not False:
+            if appauthor:
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
@@ -94,7 +95,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
         if appname:
             path = os.path.join(path, appname)
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -150,7 +151,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         if appname:
             if version:
-                appname = os.path.join(appname, version)
+                appname = os.path.join(appname, str(version))
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
 
         if multipath:
@@ -160,7 +161,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         return path
 
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -200,7 +201,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
         if appname:
             path = os.path.join(path, appname)
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -237,7 +238,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
     if system in ["win32", "darwin"]:
         path = site_data_dir(appname, appauthor)
         if appname and version:
-            path = os.path.join(path, version)
+            path = os.path.join(path, str(version))
     else:
         # XDG default for $XDG_CONFIG_DIRS
         # only first, if multipath is False
@@ -245,7 +246,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
         pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         if appname:
             if version:
-                appname = os.path.join(appname, version)
+                appname = os.path.join(appname, str(version))
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
 
         if multipath:
@@ -308,7 +309,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
         if appname:
             path = os.path.join(path, appname)
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -350,7 +351,7 @@ def user_state_dir(appname=None, appauthor=None, version=None, roaming=False):
         if appname:
             path = os.path.join(path, appname)
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -391,17 +392,17 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
             os.path.expanduser('~/Library/Logs'),
             appname)
     elif system == "win32":
-        path = user_data_dir(appname, appauthor, version)
+        path = user_data_dir(appname, appauthor, str(version))
         version = False
         if opinion:
             path = os.path.join(path, "Logs")
     else:
-        path = user_cache_dir(appname, appauthor, version)
+        path = user_cache_dir(appname, appauthor, str(version))
         version = False
         if opinion:
             path = os.path.join(path, "log")
     if appname and version:
-        path = os.path.join(path, version)
+        path = os.path.join(path, str(version))
     return path
 
 
@@ -433,7 +434,7 @@ class AppDirs(object):
     @property
     def site_config_dir(self):
         return site_config_dir(self.appname, self.appauthor,
-                             version=self.version, multipath=self.multipath)
+                               version=self.version, multipath=self.multipath)
 
     @property
     def user_cache_dir(self):
