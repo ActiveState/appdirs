@@ -13,6 +13,13 @@ tests_require = []
 if sys.version_info < (2, 7):
     tests_require.append("unittest2")
 
+if sys.platform == "win32":
+    test_suite = 'test.test_api_win32'
+elif sys.platform == "darwin":
+    test_suite = 'test.test_api_darwin'
+else:
+    test_suite = 'test.test_api_linux'
+
 
 def read(fname):
     inf = open(os.path.join(os.path.dirname(__file__), fname))
@@ -52,7 +59,7 @@ setup(
         Programming Language :: Python :: Implementation :: CPython
         Topic :: Software Development :: Libraries :: Python Modules
         """.split('\n') if c.strip()],
-    test_suite='test.test_api',
+    test_suite=test_suite,
     tests_require=tests_require,
     keywords='application directory log cache user',
     author='Trent Mick',

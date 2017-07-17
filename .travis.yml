@@ -8,4 +8,12 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
+  - "nightly"
+os:
+  - linux
+  - osx
+matrix:
+  allow_failures:
+    - python: "nightly"
+cache: pip
 script: python setup.py test
