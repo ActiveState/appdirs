@@ -6,9 +6,9 @@ version: 1.4.4-{build}-{branch}
 # Set up
 environment:
   matrix:
-    - PYTHON: "C:\\Python26"
-      PYTHON_VERSION: "2.6.x"
-      PYTHON_ARCH: "32"
+#    - PYTHON: "C:\\Python26"     # Doesn't work at the moment
+#      PYTHON_VERSION: "2.6.x"
+#      PYTHON_ARCH: "32"
     - PYTHON: "C:\\Python27"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "32"
@@ -24,9 +24,9 @@ environment:
     - PYTHON: "C:\\Python36"
       PYTHON_VERSION: "3.6.x"
       PYTHON_ARCH: "32"
-    - PYTHON: "C:\\Python26-x64"
-      PYTHON_VERSION: "2.6.x"
-      PYTHON_ARCH: "64"
+#    - PYTHON: "C:\\Python26-x64" # Doesn't work at the moment
+#      PYTHON_VERSION: "2.6.x"
+#      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "64"

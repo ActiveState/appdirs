@@ -11,7 +11,7 @@ python:
   - "nightly"
 os:
   - linux
-  - osx
+#  - osx
 matrix:
   allow_failures:
     - python: "nightly"

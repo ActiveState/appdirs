@@ -174,8 +174,6 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
                          os.pathsep.join(['/usr/local/share', '/usr/share']))
         pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         if appname:
-            if appauthor:
-                appname = os.path.join(appauthor, appname)
             if version:
                 appname = os.path.join(appname, str(version))
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
