@@ -1,7 +1,7 @@
 .. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
     :target: http://travis-ci.org/ActiveState/appdirs
 
-the problem
+The problem
 ===========
 
 What directory should your app use for storing user data? If running on Mac OS X, you
@@ -9,13 +9,13 @@ should use::
 
     ~/Library/Application Support/<AppName>
 
-If on Windows (at least English Win XP) that should be::
+If on Windows (at least English Windows Vista) that should be::
 
-    C:\Documents and Settings\<User>\Application Data\Local Settings\<AppAuthor>\<AppName>
+    C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
 
 or possibly::
 
-    C:\Documents and Settings\<User>\Application Data\<AppAuthor>\<AppName>
+    C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
 
 for `roaming profiles <http://bit.ly/9yl3b6>`_ but that is another story.
 
@@ -36,6 +36,7 @@ help you choose an appropriate:
 - user cache dir (``user_cache_dir``)
 - site data dir (``site_data_dir``)
 - site config dir (``site_config_dir``)
+- user state dir (``user_state_dir``)
 - user log dir (``user_log_dir``)
 
 and also:
@@ -45,7 +46,7 @@ and also:
   documentation and code for when an opinion is being applied.
 
 
-some example output
+Some example output
 ===================
 
 On Mac OS X::
