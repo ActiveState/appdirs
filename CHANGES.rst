@@ -1,6 +1,14 @@
 appdirs Changelog
 =================
 
+appdirs 1.5.0
+-------------
+- Accept int and float for version parameter
+- [Windows] Use environment variables and KNOWFOLDERID instead of CSIDL
+- [issue #80] Allow usage of appauthor on OS X
+- Overhaul of documentation
+- New testsuite, seperated by operating system
+
 appdirs 1.4.4
 -------------
 - [PR #92] Don't import appdirs from setup.py which

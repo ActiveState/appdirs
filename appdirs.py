@@ -34,7 +34,7 @@ import sys
 import os
 
 
-__version__ = "1.4.4"
+__version__ = "1.5.0"
 __version_info__ = tuple(int(segment) for segment in __version__.split("."))
 
 
