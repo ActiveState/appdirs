@@ -4,7 +4,9 @@ appdirs Changelog
 appdirs 1.4.4
 -------------
 - [PR #92] Don't import appdirs from setup.py which
-fixes #91 - Don't get version from appdirs.__version__ 
+resolves issue #91
+- [PR #100] Corrects the config directory on OSX/macOS, which
+resolves issue #63.
 
 Project officially classified as Stable which is important
 for inclusion in other distros such as ActivePython.
