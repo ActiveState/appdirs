@@ -222,16 +222,20 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     Notes
     -----
     Typical user config directories are:
-        Mac OS X:               same as user_data_dir
-        Unix:                   $XDG_CONFIG_HOME or ~/.config/<AppName>
+        Mac OS X:               ~/Library/Preferences/<AppName>
+        Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
 
     References
     ----------
     .. [TN] https://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx
     """
-    if system in ["win32", "darwin"]:
-        return user_data_dir(appname, appauthor, version, roaming)
+    if system == "win32":
+        path = user_data_dir(appname, appauthor, version, roaming)
+    elif system == 'darwin':
+        path = os.path.expanduser('~/Library/Preferences/')
+        if appname:
+            path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
         if appname:
@@ -277,8 +281,14 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
     WARNING: Do not use this on Windows Vista. On Vista the C:\ProgramData is a
     system directory and therefore not writable.
     """
-    if system in ["win32", "darwin"]:
-        return site_data_dir(appname, appauthor, version)
+    if system == 'win32':
+        path = site_data_dir(appname, appauthor)
+        if appname and version:
+            path = os.path.join(path, version)
+    elif system == 'darwin':
+        path = os.path.expanduser('/Library/Preferences')
+        if appname:
+            path = os.path.join(path, appname)
     else:
         # XDG default for $XDG_CONFIG_DIRS
         # only first, if multipath is False
