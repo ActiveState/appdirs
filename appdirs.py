@@ -284,7 +284,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
     if system == 'win32':
         path = site_data_dir(appname, appauthor)
         if appname and version:
-            path = os.path.join(path, version)
+            path = os.path.join(path, str(version))
     elif system == 'darwin':
         path = os.path.expanduser('/Library/Preferences')
         if appname:
