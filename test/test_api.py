@@ -6,9 +6,9 @@ if sys.version_info < (2, 7):
 else:
     import unittest
 
-if sys.version_info[0] < 3:
+try:
     STRING_TYPE = basestring
-else:
+except NameError:
     STRING_TYPE = str
 
 
@@ -37,5 +37,6 @@ class Test_AppDir(unittest.TestCase):
         self.assertIsInstance(dirs.user_state_dir, STRING_TYPE)
         self.assertIsInstance(dirs.user_log_dir, STRING_TYPE)
 
+        
 if __name__ == "__main__":
     unittest.main()
