@@ -46,13 +46,6 @@ else:
     system = sys.platform
 
 
-def _effective_user():
-    try:
-        return pwd.getpwuid(os.geteuid()).pw_name
-    except Exception:
-        return ''
-
-
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
 
@@ -96,17 +89,18 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
             else:
                 path = os.path.join(path, appname)
     else:
-        user = _effective_user()
         if system == 'darwin':
             path = os.path.expanduser(
-                '~{0}/Library/Application Support/'.format(user)
+                '~{0}/Library/Application Support/'.format(_effective_user())
             )
             if appname:
                 path = os.path.join(path, appname)
         else:
             path = os.getenv(
                 'XDG_DATA_HOME',
-                os.path.expanduser('~{0}/.local/share'.format(user))
+                os.path.expanduser(
+                    '~{0}/.local/share'.format(_effective_user())
+                )
             )
             if appname:
                 path = os.path.join(path, appname)
@@ -213,15 +207,16 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     if system == "win32":
         path = user_data_dir(appname, appauthor, None, roaming)
     else:
-        user = _effective_user()
         if system == 'darwin':
-            path = os.path.expanduser('~{0}/Library/Preferences/'.format(user))
+            path = os.path.expanduser(
+                '~{0}/Library/Preferences/'.format(_effective_user())
+            )
             if appname:
                 path = os.path.join(path, appname)
         else:
             path = os.getenv(
                 'XDG_CONFIG_HOME',
-                os.path.expanduser('~{0}/.config'.format(user))
+                os.path.expanduser('~{0}/.config'.format(_effective_user()))
             )
             if appname:
                 path = os.path.join(path, appname)
@@ -330,15 +325,16 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
             if opinion:
                 path = os.path.join(path, "Cache")
     else:
-        user = _effective_user()
         if system == 'darwin':
-            path = os.path.expanduser('~{0}/Library/Caches'.format(user))
+            path = os.path.expanduser(
+                '~{0}/Library/Caches'.format(_effective_user())
+            )
             if appname:
                 path = os.path.join(path, appname)
         else:
             path = os.getenv(
                 'XDG_CACHE_HOME',
-                os.path.expanduser('~{0}/.cache'.format(user))
+                os.path.expanduser('~{0}/.cache'.format(_effective_user()))
             )
             if appname:
                 path = os.path.join(path, appname)
@@ -427,7 +423,8 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     if system == "darwin":
         path = os.path.join(
             os.path.expanduser('~{0}/Library/Logs'.format(_effective_user())),
-            appname)
+            appname
+        )
     elif system == "win32":
         path = user_data_dir(appname, appauthor, version)
         version = False
@@ -490,6 +487,13 @@ class AppDirs(object):
 
 
 #---- internal support stuff
+
+def _effective_user():
+    try:
+        return pwd.getpwuid(os.geteuid()).pw_name
+    except Exception:
+        return ''
+
 
 def _get_win_folder_from_registry(csidl_name):
     """This is a fallback technique at best. I'm not sure if using the
