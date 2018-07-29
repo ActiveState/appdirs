@@ -1,6 +1,10 @@
 appdirs Changelog
 =================
 
+Next Release
+------------
+- [PR #] Do not load ``pywin32`` dlls on Windows, in order to allow ``pywin32`` to be upgraded
+
 appdirs 1.4.4
 -------------
 - [PR #92] Don't import appdirs from setup.py which resolves issue #91
