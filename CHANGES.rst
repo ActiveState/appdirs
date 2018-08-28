@@ -56,7 +56,7 @@ appdirs 1.1.0
 
 - [issue 4] Add ``AppDirs.user_log_dir``.
 - [Unix, issue 2, issue 7] appdirs now conforms to `XDG base directory spec
-  <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_.
+  <https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_.
 - [Mac, issue 5] Fix ``site_data_dir()`` on Mac.
 - [Mac] Drop use of 'Carbon' module in favour of hardcoded paths; supports
   Python3 now.
@@ -83,10 +83,10 @@ appdirs 1.0.1 (never released)
 ------------------------------
 
 Started this changelog 27 July 2010. Before that this module originated in the
-`Komodo <http://www.activestate.com/komodo>`_ product as ``applib.py`` and then
+`Komodo <https://www.activestate.com/komodo-ide>`_ product as ``applib.py`` and then
 as `applib/location.py
-<http://github.com/ActiveState/applib/blob/master/applib/location.py>`_ (used by
-`PyPM <http://code.activestate.com/pypm/>`_ in `ActivePython
-<http://www.activestate.com/activepython>`_). This is basically a fork of
+<https://github.com/ActiveState/applib/blob/master/applib/location.py>`_ (used by
+`PyPM <https://code.activestate.com/pypm/>`_ in `ActivePython
+<https://www.activestate.com/activepython>`_). This is basically a fork of
 applib.py 1.0.1 and applib/location.py 1.0.1.
 

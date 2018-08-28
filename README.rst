@@ -1,5 +1,5 @@
 .. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
-    :target: http://travis-ci.org/ActiveState/appdirs
+    :target: https://travis-ci.org/ActiveState/appdirs
 
 the problem
 ===========
@@ -17,10 +17,10 @@ or possibly::
 
     C:\Documents and Settings\<User>\Application Data\<AppAuthor>\<AppName>
 
-for `roaming profiles <http://bit.ly/9yl3b6>`_ but that is another story.
+for `roaming profiles <https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-vista/cc766489(v=ws.10)>`_ but that is another story.
 
 On Linux (and other Unices) the dir, according to the `XDG
-spec <http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_, is::
+spec <https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_, is::
 
     ~/.local/share/<AppName>
 
