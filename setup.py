@@ -1,17 +1,11 @@
 #!/usr/bin/env python
-import sys
 import os
-import os.path
 # appdirs is a dependency of setuptools, so allow installing without it.
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 import ast
-
-tests_require = []
-if sys.version_info < (2, 7):
-    tests_require.append("unittest2")
 
 
 def read(fname):
@@ -41,11 +35,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -54,8 +45,6 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    test_suite='test.test_api',
-    tests_require=tests_require,
     keywords='application directory log cache user',
     author='Trent Mick',
     author_email='trentm@gmail.com',

@@ -4,6 +4,7 @@ appdirs Changelog
 UNRELEASED
 ----------
 - Add Python 3.7 support
+- Remove support for end-of-life Pythons 2.6, 3.2, and 3.3
 
 appdirs 1.4.4
 -------------
@@ -93,4 +94,3 @@ as `applib/location.py
 `PyPM <https://code.activestate.com/pypm/>`_ in `ActivePython
 <https://www.activestate.com/activepython>`_). This is basically a fork of
 applib.py 1.0.1 and applib/location.py 1.0.1.
-
