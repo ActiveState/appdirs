@@ -59,7 +59,7 @@ setup(
     author_email='trentm@gmail.com',
     maintainer='Trent Mick; Sridhar Ratnakumar; Jeff Rouse',
     maintainer_email='trentm@gmail.com; github@srid.name; jr@its.to',
-    url='http://github.com/ActiveState/appdirs',
+    url='https://github.com/ActiveState/appdirs',
     license='MIT',
     py_modules=["appdirs"],
 )
