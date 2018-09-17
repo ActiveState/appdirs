@@ -1,6 +1,10 @@
 appdirs Changelog
 =================
 
+UNRELEASED
+----------
+- Add Python 3.7 support
+
 appdirs 1.4.4
 -------------
 - [PR #92] Don't import appdirs from setup.py which resolves issue #91
