@@ -4,7 +4,7 @@
 the problem
 ===========
 
-What directory should your app use for storing user data? If running on Mac OS X, you
+What directory should your app use for storing user data? If running on macOS, you
 should use::
 
     ~/Library/Application Support/<AppName>
@@ -48,7 +48,7 @@ and also:
 some example output
 ===================
 
-On Mac OS X::
+On macOS::
 
     >>> from appdirs import *
     >>> appname = "SuperApp"
