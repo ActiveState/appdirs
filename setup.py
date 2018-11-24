@@ -1,11 +1,7 @@
 #!/usr/bin/env python
-import os
-# appdirs is a dependency of setuptools, so allow installing without it.
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
 import ast
+import os
+from setuptools import setup
 
 
 def read(fname):
