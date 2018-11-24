@@ -6,21 +6,17 @@ try:
 except ImportError:
     from distutils.core import setup
 import ast
+import re
 
 
 def read(fname):
-    inf = open(os.path.join(os.path.dirname(__file__), fname))
-    out = "\n" + inf.read().replace("\r\n", "\n")
-    inf.close()
-    return out
+    with open(os.path.join(os.path.dirname(__file__), fname)) as inf:
+        return "\n" + inf.read().replace("\r\n", "\n")
 
 
 # Do not import `appdirs` yet, lest we import some random version on sys.path.
-for line in read("appdirs.py").splitlines():
-    if line.startswith("__version__"):
-        version = ast.literal_eval(line.split("=", 1)[1].strip())
-        break
-
+match = re.search('^__version__ = (.*)$', read("appdirs.py"), re.MULTILINE)
+version = ast.literal_eval(match.group(1))
 
 setup(
     name='appdirs',
