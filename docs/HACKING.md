@@ -5,7 +5,8 @@
 ensure correct version in CHANGES.md and appdirs.py, and:
 
 ```
-python setup.py register sdist bdist_wheel upload
+python setup.py sdist bdist_wheel
+python -m twine upload dist/*
 ```
 
 ## docker image
@@ -13,4 +14,3 @@ python setup.py register sdist bdist_wheel upload
 ```
 docker build -t appdirs .
 ```
-
