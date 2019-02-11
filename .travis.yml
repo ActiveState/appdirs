@@ -1,15 +1,12 @@
+dist: xenial
 language: python
 python:
   - "2.7"
-  - "pypy"
+  - "pypy2.7-6.0"
   - "3.4"
   - "3.5"
   - "3.6"
-
-matrix:
-  include:
-    - python: "3.7"
-      dist: xenial
-      sudo: true
+  - "3.7"
+  - "pypy3.5-6.0"
 
 script: python setup.py test
