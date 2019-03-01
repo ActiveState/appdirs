@@ -41,6 +41,16 @@ else:
     system = sys.platform
 
 
+def path_property(f):
+    @property
+    def wrapper(self):
+        if self.use_pathlib:
+            import pathlib
+            return pathlib.Path(f(self))
+        else:
+            return f(self)
+    return wrapper
+
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
@@ -415,44 +425,45 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
     def __init__(self, appname=None, appauthor=None, version=None,
-            roaming=False, multipath=False):
+            roaming=False, multipath=False, use_pathlib=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
         self.roaming = roaming
         self.multipath = multipath
+        self.use_pathlib = use_pathlib
 
-    @property
+    @path_property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
                              version=self.version, roaming=self.roaming)
 
-    @property
+    @path_property
     def site_data_dir(self):
         return site_data_dir(self.appname, self.appauthor,
                              version=self.version, multipath=self.multipath)
 
-    @property
+    @path_property
     def user_config_dir(self):
         return user_config_dir(self.appname, self.appauthor,
                                version=self.version, roaming=self.roaming)
 
-    @property
+    @path_property
     def site_config_dir(self):
         return site_config_dir(self.appname, self.appauthor,
                              version=self.version, multipath=self.multipath)
 
-    @property
+    @path_property
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
                               version=self.version)
 
-    @property
+    @path_property
     def user_state_dir(self):
         return user_state_dir(self.appname, self.appauthor,
                               version=self.version)
 
-    @property
+    @path_property
     def user_log_dir(self):
         return user_log_dir(self.appname, self.appauthor,
                             version=self.version)
