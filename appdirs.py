@@ -44,10 +44,10 @@ else:
 def path_property(f):
     @property
     def wrapper(self):
-        if self.use_pathlib:
+        try:
             import pathlib
             return pathlib.Path(f(self))
-        else:
+        except ImportError:
             return f(self)
     return wrapper
 
@@ -425,13 +425,12 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
 class AppDirs(object):
     """Convenience wrapper for getting application dirs."""
     def __init__(self, appname=None, appauthor=None, version=None,
-            roaming=False, multipath=False, use_pathlib=False):
+            roaming=False, multipath=False):
         self.appname = appname
         self.appauthor = appauthor
         self.version = version
         self.roaming = roaming
         self.multipath = multipath
-        self.use_pathlib = use_pathlib
 
     @path_property
     def user_data_dir(self):
