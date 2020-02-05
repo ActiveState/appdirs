@@ -563,6 +563,15 @@ def _get_win_folder_with_jna(csidl_name):
 
     return dir
 
+def _get_win_folder_from_env(csidl_name):
+    env_var_name = {
+        "CSIDL_APPDATA": "APPDATA",
+        "CSIDL_COMMON_APPDATA": "ALLUSERSPROFILE",
+        "CSIDL_LOCAL_APPDATA": "LOCALAPPDATA",
+    }[csidl_name]
+
+    return os.environ[env_var_name]
+
 if system == "win32":
     try:
         import win32com.shell
@@ -576,7 +585,14 @@ if system == "win32":
                 import com.sun.jna
                 _get_win_folder = _get_win_folder_with_jna
             except ImportError:
-                _get_win_folder = _get_win_folder_from_registry
+                try:
+                    if PY3:
+                        import winreg as _winreg
+                    else:
+                        import _winreg
+                    _get_win_folder = _get_win_folder_from_registry
+                except ImportError:
+                    _get_win_folder = _get_win_folder_from_env
 
 
 #---- self test code
