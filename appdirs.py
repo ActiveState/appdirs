@@ -42,10 +42,7 @@ else:
 
 
 def getenv(name, default=None):
-    value = os.getenv(name)
-    if not value:
-        value = default
-    return value
+    return os.getenv(name) or default
 
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
@@ -150,8 +147,9 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
     else:
         # XDG default for $XDG_DATA_DIRS
         # only first, if multipath is False
-        path = getenv('XDG_DATA_DIRS',
-                         os.pathsep.join(['/usr/local/share', '/usr/share']))
+        path = getenv(
+            'XDG_DATA_DIRS', os.pathsep.join(['/usr/local/share', '/usr/share'])
+        )
         pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
         if appname:
             if version:
