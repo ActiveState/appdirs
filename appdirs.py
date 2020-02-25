@@ -150,7 +150,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         if appname:
             if version:
                 appname = os.path.join(appname, version)
-            pathlist = [os.sep.join([x, appname]) for x in pathlist]
+            pathlist = [os.path.join(x, appname) for x in pathlist]
 
         if multipath:
             path = os.pathsep.join(pathlist)
@@ -253,7 +253,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
         if appname:
             if version:
                 appname = os.path.join(appname, version)
-            pathlist = [os.sep.join([x, appname]) for x in pathlist]
+            pathlist = [os.path.join(x, appname) for x in pathlist]
 
         if multipath:
             path = os.pathsep.join(pathlist)
