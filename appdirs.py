@@ -539,13 +539,15 @@ def _get_win_folder_with_jna(csidl_name):
 if system == "win32":
     try:
         from ctypes import windll
-        _get_win_folder = _get_win_folder_with_ctypes
     except ImportError:
         try:
             import com.sun.jna
-            _get_win_folder = _get_win_folder_with_jna
         except ImportError:
             _get_win_folder = _get_win_folder_from_registry
+        else:
+            _get_win_folder = _get_win_folder_with_jna
+    else:
+        _get_win_folder = _get_win_folder_with_ctypes
 
 
 #---- self test code
