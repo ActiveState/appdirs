@@ -185,7 +185,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
             for a discussion of issues.
 
     Typical user config directories are:
-        Mac OS X:               ~/Library/Preferences/<AppName>
+        Mac OS X:               ~/Library/Preferences/<AppName> if it exists, else ~/.config/<AppName>
         Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
 
@@ -198,6 +198,10 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
         path = os.path.expanduser('~/Library/Preferences/')
         if appname:
             path = os.path.join(path, appname)
+        if not os.path.isdir(path):
+            path = os.path.expanduser('~/.config/')
+            if appname:
+                path = os.path.join(path, appname)
     else:
         path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
         if appname:
