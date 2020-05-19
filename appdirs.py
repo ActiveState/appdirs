@@ -45,12 +45,9 @@ def user_download_dir():
     r"""Return full path to the user-specific download dir for this application.
 
     Typical user data directories are:
-        Mac OS X:               ~/Downloads
-        Unix:                   ~/Downloads    # or in $XDG_DOWNLOAD_DIR, if defined
-        Win XP (not roaming):   C:\Documents and Settings\<username>\Application Data\<AppAuthor>\<AppName>
-        Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
-        Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
-        Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+        Mac OS X:  ~/Downloads
+        Unix:      ~/Downloads    # or in $XDG_DOWNLOAD_DIR, if defined
+        Win 7:     C:\Users\<username>\Downloads
 
     For Unix, we follow the XDG spec and support $XDG_DOWNLOAD_DIR.
     That means, by default "~/Downloads".
