@@ -449,6 +449,10 @@ class AppDirs(object):
         self.multipath = multipath
 
     @property
+    def user_download_dir(self):
+        return user_download_dir()
+
+    @property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
                              version=self.version, roaming=self.roaming)
