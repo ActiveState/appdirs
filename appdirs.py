@@ -18,6 +18,7 @@ __version_info__ = tuple(int(segment) for segment in __version__.split("."))
 
 import sys
 import os
+import re
 
 PY3 = sys.version_info[0] == 3
 
@@ -59,6 +60,14 @@ def user_download_dir():
     elif system == 'darwin':
         return os.path.expanduser('~/Downloads')
     else:
+        try:
+            config_dirs = os.path.join(user_config_dir(), 'user-dirs.dirs')
+            with open(config_dirs) as dirs_file:
+                path_match = re.search(r'XDG_DOWNLOAD_DIR=(.+)', dirs_file.read())
+                cleaned_path = path_match.group(1).replace('"', '').replace('$HOME', '~')
+                return os.path.expanduser(cleaned_path)
+        except Exception:
+            pass
         return os.getenv('XDG_DOWNLOAD_DIR', os.path.expanduser("~/Downloads"))
 
 
@@ -671,3 +680,6 @@ if __name__ == "__main__":
     dirs = AppDirs(appname, appauthor=False)
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
+
+    print("\n-- download dir")
+    print(user_download_dir())
