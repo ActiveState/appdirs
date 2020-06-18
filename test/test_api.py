@@ -23,6 +23,8 @@ class Test_AppDir(unittest.TestCase):
         self.assertIsInstance(
             appdirs.user_state_dir('MyApp', 'MyCompany'), STRING_TYPE)
         self.assertIsInstance(
+            appdirs.site_state_dir('MyApp', 'MyCompany'), STRING_TYPE)
+        self.assertIsInstance(
             appdirs.user_log_dir('MyApp', 'MyCompany'), STRING_TYPE)
 
     def test_dirs(self):
@@ -31,6 +33,7 @@ class Test_AppDir(unittest.TestCase):
         self.assertIsInstance(dirs.site_data_dir, STRING_TYPE)
         self.assertIsInstance(dirs.user_cache_dir, STRING_TYPE)
         self.assertIsInstance(dirs.user_state_dir, STRING_TYPE)
+        self.assertIsInstance(dirs.site_state_dir, STRING_TYPE)
         self.assertIsInstance(dirs.user_log_dir, STRING_TYPE)
 
 if __name__ == "__main__":
