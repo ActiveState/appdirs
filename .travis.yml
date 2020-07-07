@@ -9,4 +9,4 @@ python:
   - "3.8"
   - "pypy3"
 
-script: python setup.py test
+script: python -m unittest discover
