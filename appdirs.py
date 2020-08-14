@@ -457,6 +457,76 @@ class AppDirs(object):
                             version=self.version)
 
 
+#---- pathlib stuff
+
+def _pathlib_wrapper(func):
+
+    try:
+        import functools
+        import pathlib
+        import inspect
+        signature = inspect.signature(func)
+
+        def inner(*args, **kwargs):
+            ba = signature.bind_partial(*args, **kwargs)
+            ba.apply_defaults()
+            return pathlib.Path(func(*ba.args, **ba.kwargs))
+
+        inner.__signature__ = signature
+        inner.__doc__ = func.__doc__
+        inner.__name__ = func.__name__.replace("dir", "path")
+        return inner
+
+    except ImportError:
+        return fun
+
+
+site_config_path = _pathlib_wrapper(site_config_dir)
+site_data_path = _pathlib_wrapper(site_data_dir)
+user_cache_path = _pathlib_wrapper(user_cache_dir)
+user_config_path = _pathlib_wrapper(user_config_dir)
+user_data_path = _pathlib_wrapper(user_data_dir)
+user_log_path = _pathlib_wrapper(user_log_dir)
+user_state_path = _pathlib_wrapper(user_state_dir)
+
+
+class AppPaths(AppDirs):
+
+    @property
+    def user_data_dir(self):
+        return user_data_path(self.appname, self.appauthor,
+                              version=self.version, roaming=self.roaming)
+
+    @property
+    def site_data_dir(self):
+        return site_data_path(self.appname, self.appauthor,
+                              version=self.version, multipath=self.multipath)
+
+    @property
+    def user_config_dir(self):
+        return user_config_path(self.appname, self.appauthor,
+                                version=self.version, roaming=self.roaming)
+
+    @property
+    def site_config_dir(self):
+        return site_config_path(self.appname, self.appauthor,
+                                version=self.version, multipath=self.multipath)
+
+    @property
+    def user_cache_dir(self):
+        return user_cache_path(self.appname, self.appauthor,
+                               version=self.version)
+
+    @property
+    def user_state_dir(self):
+        return user_state_path(self.appname, self.appauthor,
+                               version=self.version)
+
+    @property
+    def user_log_dir(self):
+        return user_log_path(self.appname, self.appauthor,
+                             version=self.version)
+
 #---- internal support stuff
 
 def _get_win_folder_from_registry(csidl_name):
