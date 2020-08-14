@@ -5,7 +5,7 @@ import appdirs
 if sys.version_info[0] < 3:
     STRING_TYPE = basestring
     PATH_TYPE = basestring
-if sys.version_info[1] < 4:
+elif sys.version_info[1] < 4:
     STRING_TYPE = str
     PATH_TYPE = str
 else:
