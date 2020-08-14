@@ -478,7 +478,7 @@ def _pathlib_wrapper(func):
         return inner
 
     except ImportError:
-        return fun
+        return func
 
 
 site_config_path = _pathlib_wrapper(site_config_dir)
