@@ -61,6 +61,8 @@ On macOS::
     '/Users/trentm/Library/Caches/SuperApp'
     >>> user_log_dir(appname, appauthor)
     '/Users/trentm/Library/Logs/SuperApp'
+    >>> user_config_dir(appname)
+    '/Library/Preferences/SuperApp'
 
 On Windows 7::
 
@@ -75,6 +77,8 @@ On Windows 7::
     'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Cache'
     >>> user_log_dir(appname, appauthor)
     'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Logs'
+    >>> user_config_dir(appname, appauthor)
+    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
 
 On Linux::
 
