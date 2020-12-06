@@ -1,0 +1,37 @@
+name: Test
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos
+          - ubuntu
+          - windows
+        python:
+          - 2.7
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+          - pypy2
+          - pypy3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Run tests
+        run: python -m unittest discover

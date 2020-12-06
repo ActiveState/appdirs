@@ -1,5 +1,5 @@
-.. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
-    :target: https://travis-ci.org/ActiveState/appdirs
+.. image:: https://github.com/ActiveState/appdirs/workflows/Test/badge.svg
+   :target: https://github.com/ActiveState/appdirs/actions?query=workflow%3ATest
 
 the problem
 ===========
@@ -117,7 +117,7 @@ On Linux::
     '/Users/trentm/Library/Logs/SuperApp'
 
 
-    
+
 Per-version isolation
 =====================
 
@@ -135,4 +135,3 @@ dirs::
     '/Users/trentm/Library/Caches/SuperApp/1.0'
     >>> dirs.user_log_dir
     '/Users/trentm/Library/Logs/SuperApp/1.0'
-
