@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from io import open
 import os
 # appdirs is a dependency of setuptools, so allow installing without it.
 try:
@@ -9,7 +10,7 @@ import ast
 
 
 def read(fname):
-    inf = open(os.path.join(os.path.dirname(__file__), fname))
+    inf = open(os.path.join(os.path.dirname(__file__), fname), encoding='utf8')
     out = "\n" + inf.read().replace("\r\n", "\n")
     inf.close()
     return out
