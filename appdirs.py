@@ -36,10 +36,10 @@ if sys.platform.startswith('java'):
         # are actually checked for and the rest of the module expects
         # *sys.platform* style strings.
         system = 'linux2'
+elif os.getenv('EXTERNAL_STORAGE'):
+    system = 'android'
 else:
     system = sys.platform
-
-
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
@@ -69,6 +69,7 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
         Win XP (roaming):       C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>
         Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>
         Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppAuthor>\<AppName>
+        Android:                /data/user/<userid>/<packagename>/files/<AppName>
 
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
     That means, by default "~/.local/share/<AppName>".
@@ -85,6 +86,10 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
                 path = os.path.join(path, appname)
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Application Support/')
+        if appname:
+            path = os.path.join(path, appname)
+    elif system == 'android':
+        path = os.path.join(_get_android_folder(), 'files')
         if appname:
             path = os.path.join(path, appname)
     else:
@@ -122,6 +127,7 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
         Win 7:      C:\ProgramData\<AppAuthor>\<AppName>   # Hidden, but writeable on Win 7.
+        Android:    same as user_data_dir
 
     For Unix, this is using the $XDG_DATA_DIRS[0] default.
 
@@ -140,6 +146,8 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         path = os.path.expanduser('/Library/Application Support')
         if appname:
             path = os.path.join(path, appname)
+    elif system == 'android':
+        path = user_data_dir(appname, appauthor, version, False)
     else:
         # XDG default for $XDG_DATA_DIRS
         # only first, if multipath is False
@@ -187,6 +195,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
         Mac OS X:               ~/Library/Preferences/<AppName>
         Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
+        Android:                /data/user/<userid>/<packagename>/shared_prefs/<AppName>
 
     For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME.
     That means, by default "~/.config/<AppName>".
@@ -195,6 +204,10 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
         path = user_data_dir(appname, appauthor, None, roaming)
     elif system == 'darwin':
         path = os.path.expanduser('~/Library/Preferences/')
+        if appname:
+            path = os.path.join(path, appname)
+    elif system == 'android':
+        path = os.path.join(_get_android_folder(), 'shared_prefs')
         if appname:
             path = os.path.join(path, appname)
     else:
@@ -231,6 +244,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
                     $XDG_CONFIG_DIRS
         Win *:      same as site_data_dir
         Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
+        Android:    same as user_config_dir
 
     For Unix, this is using the $XDG_CONFIG_DIRS[0] default, if multipath=False
 
@@ -244,6 +258,8 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
         path = os.path.expanduser('/Library/Preferences')
         if appname:
             path = os.path.join(path, appname)
+    elif system == 'android':
+        path = user_config_dir(appname, appauthor, version, False)
     else:
         # XDG default for $XDG_CONFIG_DIRS
         # only first, if multipath is False
@@ -284,6 +300,7 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
         Unix:       ~/.cache/<AppName> (XDG default)
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Cache
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Cache
+        Android:    /data/user/<userid>/<packagename>/cache/<AppName>
 
     On Windows the only suggestion in the MSDN docs is that local settings go in
     the `CSIDL_LOCAL_APPDATA` directory. This is identical to the non-roaming
@@ -309,6 +326,8 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
         path = os.path.expanduser('~/Library/Caches')
         if appname:
             path = os.path.join(path, appname)
+    elif system == 'android':
+        path = os.path.join(_get_android_folder(), 'cache')
     else:
         path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
         if appname:
@@ -343,13 +362,14 @@ def user_state_dir(appname=None, appauthor=None, version=None, roaming=False):
         Mac OS X:  same as user_data_dir
         Unix:      ~/.local/state/<AppName>   # or in $XDG_STATE_HOME, if defined
         Win *:     same as user_data_dir
+        Android:   same as user_data_dir
 
     For Unix, we follow this Debian proposal <https://wiki.debian.org/XDGBaseDirectorySpecification#state>
     to extend the XDG spec and support $XDG_STATE_HOME.
 
     That means, by default "~/.local/state/<AppName>".
     """
-    if system in ["win32", "darwin"]:
+    if system in ["win32", "darwin", "android"]:
         path = user_data_dir(appname, appauthor, None, roaming)
     else:
         path = os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))
@@ -383,6 +403,7 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
         Unix:       ~/.cache/<AppName>/log  # or under $XDG_CACHE_HOME if defined
         Win XP:     C:\Documents and Settings\<username>\Local Settings\Application Data\<AppAuthor>\<AppName>\Logs
         Vista:      C:\Users\<username>\AppData\Local\<AppAuthor>\<AppName>\Logs
+        Android:    /data/user/<userid>/<packagename>/cache/<AppName>/log
 
     On Windows the only suggestion in the MSDN docs is that local settings
     go in the `CSIDL_LOCAL_APPDATA` directory. (Note: I'm interested in
@@ -544,6 +565,23 @@ def _get_win_folder_from_environ(csidl_name):
 
     return os.environ[env_var_name]
 
+def _get_android_folder_with_jnius():
+    from jnius import autoclass
+
+    Context = autoclass('android.content.Context')
+    return Context.getFilesDir().getParentFile().getAbsolutePath()
+
+def _get_android_folder_brute_path():
+    from re import match
+
+    pattern = r'/data/(data|user/\d+)/(.+)/files'
+
+    for path in sys.path:
+        if match(pattern, path):
+            return path.split('/files')[0]
+
+    raise OSError('Cannot find path to android app folder')
+
 if system == "win32":
     try:
         from ctypes import windll
@@ -564,6 +602,14 @@ if system == "win32":
             _get_win_folder = _get_win_folder_with_jna
     else:
         _get_win_folder = _get_win_folder_with_ctypes
+
+elif system == "android":
+    try:
+        from jnius import autoclass
+    except ImportError:
+        _get_android_folder = _get_android_folder_brute_path
+    else:
+        _get_android_folder = _get_android_folder_with_jnius
 
 
 #---- self test code
