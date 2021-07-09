@@ -605,8 +605,8 @@ if system == "win32":
 
 elif system == "android":
     try:
-        from jnius import autoclass
-    except ImportError:
+        _get_android_folder_with_jnius()
+    except:
         _get_android_folder = _get_android_folder_brute_path
     else:
         _get_android_folder = _get_android_folder_with_jnius
