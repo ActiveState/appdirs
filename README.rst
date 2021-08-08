@@ -1,3 +1,9 @@
+.. role:: python(code)
+   :language: python
+
+.. role:: bash(code)
+   :language: bash
+
 .. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
     :target: https://travis-ci.org/ActiveState/appdirs
 
@@ -29,14 +35,44 @@ spec <https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html>`_
 =========================
 
 This kind of thing is what the ``appdirs`` module is for. ``appdirs`` will
-help you choose an appropriate:
+help you choose the appropriate directory:
 
-- user data dir (``user_data_dir``)
-- user config dir (``user_config_dir``)
-- user cache dir (``user_cache_dir``)
-- site data dir (``site_data_dir``)
-- site config dir (``site_config_dir``)
-- user log dir (``user_log_dir``)
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash Shell Variable and           | Use Case                    | Return Type                 |
+| ``appdirs`` Python Equivalent     |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_DATA_HOME`      | User-specific data files    | Single directory            |
+|                                   |                             |                             |
+| Python: :python:`user_data_dir`   |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_CONFIG_HOME`    | User-specific               | Single directory            |
+|                                   | configuration files         |                             |
+| Python: :python:`user_config_dir` |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_STATE_HOME`     | User-specific state data    | Single directory            |
+|                                   |                             |                             |
+| Python: N/A                       |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_DATA_DIRS`      | System data files           | Set of preference-ordered   |
+|                                   |                             | base directories            |
+| Python: :python:`site_data_dir`   |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_CONFIG_DIRS`    | System configuration files  | Set of preference-ordered   |
+|                                   |                             | base directories            |
+| Python: :python:`site_config_dir` |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_CACHE_HOME`     | User-specific non-essential | Single directory            |
+|                                   |                             |                             |
+| Python: N/A                       | (cached) data               |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: :bash:`$XDG_RUNTIME_DIR`    | User-specific runtime files | Single directory            |
+|                                   | and other file objects      |                             |
+| Python: N/A                       |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
+| Bash: N/A                         | User-specific log files     | Single directory            |
+|                                   |                             |                             |
+| Python: :python:`user_log_dir`    |                             |                             |
++-----------------------------------+-----------------------------+-----------------------------+
 
 and also:
 
@@ -48,91 +84,120 @@ and also:
 some example output
 ===================
 
-On macOS::
+First:
+------
+
+.. code:: python
 
     >>> from appdirs import *
     >>> appname = "SuperApp"
     >>> appauthor = "Acme"
-    >>> user_data_dir(appname, appauthor)
-    '/Users/trentm/Library/Application Support/SuperApp'
-    >>> site_data_dir(appname, appauthor)
-    '/Library/Application Support/SuperApp'
-    >>> user_cache_dir(appname, appauthor)
-    '/Users/trentm/Library/Caches/SuperApp'
-    >>> user_log_dir(appname, appauthor)
-    '/Users/trentm/Library/Logs/SuperApp'
 
-On Windows 7::
 
-    >>> from appdirs import *
-    >>> appname = "SuperApp"
-    >>> appauthor = "Acme"
-    >>> user_data_dir(appname, appauthor)
-    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp'
-    >>> user_data_dir(appname, appauthor, roaming=True)
-    'C:\\Users\\trentm\\AppData\\Roaming\\Acme\\SuperApp'
-    >>> user_cache_dir(appname, appauthor)
-    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Cache'
-    >>> user_log_dir(appname, appauthor)
-    'C:\\Users\\trentm\\AppData\\Local\\Acme\\SuperApp\\Logs'
+On macOS:
+---------
 
-On Linux::
++---------------------------------------------------+----------------------------------------------------------+
+| Command                                           | Returns                                                  |
++---------------------------------------------------+----------------------------------------------------------+
+| :python:`>>> user_data_dir(appname, appauthor)`   | ``'/Users/trentm/Library/Application Support/SuperApp'`` |
++---------------------------------------------------+----------------------------------------------------------+
+| :python:`>>> site_data_dir(appname, appauthor)`   | ``'/Library/Application Support/SuperApp'``              |
++---------------------------------------------------+----------------------------------------------------------+
+| :python:`>>> user_cache_dir(appname, appauthor)`  | ``'/Users/trentm/Library/Caches/SuperApp'``              |
++---------------------------------------------------+----------------------------------------------------------+
+| :python:`>>> user_log_dir(appname, appauthor)`    | ``'/Users/trentm/Library/Logs/SuperApp'``                |
++---------------------------------------------------+----------------------------------------------------------+
 
-    >>> from appdirs import *
-    >>> appname = "SuperApp"
-    >>> appauthor = "Acme"
-    >>> user_data_dir(appname, appauthor)
-    '/home/trentm/.local/share/SuperApp
-    >>> site_data_dir(appname, appauthor)
-    '/usr/local/share/SuperApp'
-    >>> site_data_dir(appname, appauthor, multipath=True)
-    '/usr/local/share/SuperApp:/usr/share/SuperApp'
-    >>> user_cache_dir(appname, appauthor)
-    '/home/trentm/.cache/SuperApp'
-    >>> user_log_dir(appname, appauthor)
-    '/home/trentm/.cache/SuperApp/log'
-    >>> user_config_dir(appname)
-    '/home/trentm/.config/SuperApp'
-    >>> site_config_dir(appname)
-    '/etc/xdg/SuperApp'
-    >>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'
-    >>> site_config_dir(appname, multipath=True)
-    '/etc/SuperApp:/usr/local/etc/SuperApp'
+On Windows 7:
+-------------
 
++---------------------------------------------------------------+----------------------------------------------------------------+
+| Command                                                       | Returns                                                        |
++---------------------------------------------------------------+----------------------------------------------------------------+
+| :python:`>>> user_data_dir(appname, appauthor)`               | ``'C:\Users\trentm\AppData\Local\Acme\SuperApp'``              |
++---------------------------------------------------------------+----------------------------------------------------------------+
+| :python:`>>> user_data_dir(appname, appauthor, roaming=True)` | ``'C:\Users\trentm\AppData\Roaming\Acme\SuperApp'``            |
++---------------------------------------------------------------+----------------------------------------------------------------+
+| :python:`>>> user_cache_dir(appname, appauthor)`              | ``'C:\Users\trentm\AppData\Local\Acme\SuperApp\Cache'``        |
++---------------------------------------------------------------+----------------------------------------------------------------+
+| :python:`>>> user_log_dir(appname, appauthor)`                | ``'C:\Users\trentm\AppData\Local\Acme\SuperApp\Logs'``         |
++---------------------------------------------------------------+----------------------------------------------------------------+
+
+On Linux:
+---------
+
++---------------------------------------------------------------------+-----------------------------------------------------+
+| Command                                                             | Returns                                             |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> user_data_dir(appname, appauthor)`                     | ``'/home/trentm/.local/share/SuperApp'``            |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> site_data_dir(appname, appauthor)`                     | ``'/usr/local/share/SuperApp'``                     |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> site_data_dir(appname, appauthor, multipath=True)`     | ``'/usr/local/share/SuperApp:/usr/share/SuperApp'`` |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> user_cache_dir(appname, appauthor)`                    | ``'/home/trentm/.cache/SuperApp'``                  |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> user_log_dir(appname, appauthor)`                      | ``'/home/trentm/.cache/SuperApp/log'``              |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> user_config_dir(appname)`                              | ``'/home/trentm/.config/SuperApp'``                 |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> site_config_dir(appname)`                              | ``'/etc/xdg/SuperApp'``                             |
++---------------------------------------------------------------------+-----------------------------------------------------+
+| :python:`>>> os.environ['XDG_CONFIG_DIRS'] = '/etc:/usr/local/etc'` | ``'/etc/SuperApp:/usr/local/etc/SuperApp'``         |
+|                                                                     |                                                     |
+| :python:`>>> site_config_dir(appname, multipath=True)`              |                                                     |
++---------------------------------------------------------------------+-----------------------------------------------------+
 
 ``AppDirs`` for convenience
 ===========================
 
-::
+First:
+------
+
+.. code:: python
 
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme")
-    >>> dirs.user_data_dir
-    '/Users/trentm/Library/Application Support/SuperApp'
-    >>> dirs.site_data_dir
-    '/Library/Application Support/SuperApp'
-    >>> dirs.user_cache_dir
-    '/Users/trentm/Library/Caches/SuperApp'
-    >>> dirs.user_log_dir
-    '/Users/trentm/Library/Logs/SuperApp'
 
+Then, e.g., on Linux:
+---------------------
 
-    
++------------------------------------+----------------------------------------------------------+
+| Command                            | Returns                                                  |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_data_dir`   | ``'/Users/trentm/Library/Application Support/SuperApp'`` |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.site_data_dir`   | ``'/Library/Application Support/SuperApp'``              |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_cache_dir`  | ``'/Users/trentm/Library/Caches/SuperApp'``              |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_log_dir`    | ``'/Users/trentm/Library/Logs/SuperApp'``                |
++------------------------------------+----------------------------------------------------------+
+
 Per-version isolation
 =====================
 
 If you have multiple versions of your app in use that you want to be
 able to run side-by-side, then you may want version-isolation for these
-dirs::
+dirs:
+
+First:
+------
+
+.. code:: python
 
     >>> from appdirs import AppDirs
     >>> dirs = AppDirs("SuperApp", "Acme", version="1.0")
-    >>> dirs.user_data_dir
-    '/Users/trentm/Library/Application Support/SuperApp/1.0'
-    >>> dirs.site_data_dir
-    '/Library/Application Support/SuperApp/1.0'
-    >>> dirs.user_cache_dir
-    '/Users/trentm/Library/Caches/SuperApp/1.0'
-    >>> dirs.user_log_dir
-    '/Users/trentm/Library/Logs/SuperApp/1.0'
 
++------------------------------------+----------------------------------------------------------+
+| Command                            | Returns                                                  |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_data_dir`   | ``'/Users/trentm/Library/Application Support/SuperApp/1.0'`` |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.site_data_dir`   | ``'/Library/Application Support/SuperApp/1.0'``              |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_cache_dir`  | ``'/Users/trentm/Library/Caches/SuperApp/1.0'``              |
++------------------------------------+----------------------------------------------------------+
+| :python:`>>> dirs.user_log_dir`    | ``'/Users/trentm/Library/Logs/SuperApp/1.0'``                |
++------------------------------------+----------------------------------------------------------+
