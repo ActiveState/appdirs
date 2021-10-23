@@ -3,6 +3,9 @@ import sys
 import os
 import os.path
 from setuptools import setup
+
+sys.path.insert(0, '')
+
 import appdirs
 
 tests_require = []
