@@ -184,7 +184,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
             for a discussion of issues.
 
     Typical user config directories are:
-        Mac OS X:               ~/Library/Preferences/<AppName>
+        Mac OS X:               ~/Library/Application Support/<AppName>
         Unix:                   ~/.config/<AppName>     # or in $XDG_CONFIG_HOME, if defined
         Win *:                  same as user_data_dir
 
@@ -194,7 +194,7 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     if system == "win32":
         path = user_data_dir(appname, appauthor, None, roaming)
     elif system == 'darwin':
-        path = os.path.expanduser('~/Library/Preferences/')
+        path = os.path.expanduser('~/Library/Application Support/')
         if appname:
             path = os.path.join(path, appname)
     else:
@@ -241,7 +241,7 @@ def site_config_dir(appname=None, appauthor=None, version=None, multipath=False)
         if appname and version:
             path = os.path.join(path, version)
     elif system == 'darwin':
-        path = os.path.expanduser('/Library/Preferences')
+        path = os.path.expanduser('/Library/Application Support')
         if appname:
             path = os.path.join(path, appname)
     else:
