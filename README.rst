@@ -1,6 +1,8 @@
 .. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
     :target: https://travis-ci.org/ActiveState/appdirs
 
+Note: You may want to check out https://pypi.org/project/platformdirs/ which is a more active fork of appdirs.
+
 the problem
 ===========
 
