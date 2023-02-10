@@ -1,7 +1,7 @@
 .. image:: https://secure.travis-ci.org/ActiveState/appdirs.png
     :target: https://travis-ci.org/ActiveState/appdirs
 
-Note: You may want to check out https://pypi.org/project/platformdirs/ which is a more active fork of appdirs.
+Note: This project has been officially deprecated. You may want to check out https://pypi.org/project/platformdirs/ which is a more active fork of appdirs. Thanks to everyone who has used appdirs. Shout out to ActiveState for the time they gave their employees to work on this over the years.
 
 the problem
 ===========
