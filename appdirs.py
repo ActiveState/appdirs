@@ -19,6 +19,11 @@ __version_info__ = tuple(int(segment) for segment in __version__.split("."))
 import sys
 import os
 
+try:
+    import pwd
+except ImportError:
+    pwd = None
+
 PY3 = sys.version_info[0] == 3
 
 if PY3:
@@ -38,7 +43,6 @@ if sys.platform.startswith('java'):
         system = 'linux2'
 else:
     system = sys.platform
-
 
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
@@ -83,14 +87,22 @@ def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
                 path = os.path.join(path, appauthor, appname)
             else:
                 path = os.path.join(path, appname)
-    elif system == 'darwin':
-        path = os.path.expanduser('~/Library/Application Support/')
-        if appname:
-            path = os.path.join(path, appname)
     else:
-        path = os.getenv('XDG_DATA_HOME', os.path.expanduser("~/.local/share"))
-        if appname:
-            path = os.path.join(path, appname)
+        if system == 'darwin':
+            path = os.path.expanduser(
+                '~{0}/Library/Application Support/'.format(_effective_user())
+            )
+            if appname:
+                path = os.path.join(path, appname)
+        else:
+            path = os.getenv(
+                'XDG_DATA_HOME',
+                os.path.expanduser(
+                    '~{0}/.local/share'.format(_effective_user())
+                )
+            )
+            if appname:
+                path = os.path.join(path, appname)
     if appname and version:
         path = os.path.join(path, version)
     return path
@@ -193,14 +205,20 @@ def user_config_dir(appname=None, appauthor=None, version=None, roaming=False):
     """
     if system == "win32":
         path = user_data_dir(appname, appauthor, None, roaming)
-    elif system == 'darwin':
-        path = os.path.expanduser('~/Library/Preferences/')
-        if appname:
-            path = os.path.join(path, appname)
     else:
-        path = os.getenv('XDG_CONFIG_HOME', os.path.expanduser("~/.config"))
-        if appname:
-            path = os.path.join(path, appname)
+        if system == 'darwin':
+            path = os.path.expanduser(
+                '~{0}/Library/Preferences/'.format(_effective_user())
+            )
+            if appname:
+                path = os.path.join(path, appname)
+        else:
+            path = os.getenv(
+                'XDG_CONFIG_HOME',
+                os.path.expanduser('~{0}/.config'.format(_effective_user()))
+            )
+            if appname:
+                path = os.path.join(path, appname)
     if appname and version:
         path = os.path.join(path, version)
     return path
@@ -305,14 +323,20 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
                 path = os.path.join(path, appname)
             if opinion:
                 path = os.path.join(path, "Cache")
-    elif system == 'darwin':
-        path = os.path.expanduser('~/Library/Caches')
-        if appname:
-            path = os.path.join(path, appname)
     else:
-        path = os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache'))
-        if appname:
-            path = os.path.join(path, appname)
+        if system == 'darwin':
+            path = os.path.expanduser(
+                '~{0}/Library/Caches'.format(_effective_user())
+            )
+            if appname:
+                path = os.path.join(path, appname)
+        else:
+            path = os.getenv(
+                'XDG_CACHE_HOME',
+                os.path.expanduser('~{0}/.cache'.format(_effective_user()))
+            )
+            if appname:
+                path = os.path.join(path, appname)
     if appname and version:
         path = os.path.join(path, version)
     return path
@@ -352,7 +376,10 @@ def user_state_dir(appname=None, appauthor=None, version=None, roaming=False):
     if system in ["win32", "darwin"]:
         path = user_data_dir(appname, appauthor, None, roaming)
     else:
-        path = os.getenv('XDG_STATE_HOME', os.path.expanduser("~/.local/state"))
+        path = os.getenv(
+            'XDG_STATE_HOME',
+            os.path.expanduser('~{0}/.local/state'.format(_effective_user()))
+        )
         if appname:
             path = os.path.join(path, appname)
     if appname and version:
@@ -394,8 +421,9 @@ def user_log_dir(appname=None, appauthor=None, version=None, opinion=True):
     """
     if system == "darwin":
         path = os.path.join(
-            os.path.expanduser('~/Library/Logs'),
-            appname)
+            os.path.expanduser('~{0}/Library/Logs'.format(_effective_user())),
+            appname
+        )
     elif system == "win32":
         path = user_data_dir(appname, appauthor, version)
         version = False
@@ -458,6 +486,13 @@ class AppDirs(object):
 
 
 #---- internal support stuff
+
+def _effective_user():
+    try:
+        return pwd.getpwuid(os.geteuid()).pw_name
+    except Exception:
+        return ''
+
 
 def _get_win_folder_from_registry(csidl_name):
     """This is a fallback technique at best. I'm not sure if using the
