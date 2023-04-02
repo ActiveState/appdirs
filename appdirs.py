@@ -40,6 +40,16 @@ else:
     system = sys.platform
 
 
+def path_property(f):
+    @property
+    def wrapper(self):
+        try:
+            import pathlib
+            return pathlib.Path(f(self))
+        except ImportError:
+            return f(self)
+    return wrapper
+
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific data dir for this application.
@@ -421,37 +431,37 @@ class AppDirs(object):
         self.roaming = roaming
         self.multipath = multipath
 
-    @property
+    @path_property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
                              version=self.version, roaming=self.roaming)
 
-    @property
+    @path_property
     def site_data_dir(self):
         return site_data_dir(self.appname, self.appauthor,
                              version=self.version, multipath=self.multipath)
 
-    @property
+    @path_property
     def user_config_dir(self):
         return user_config_dir(self.appname, self.appauthor,
                                version=self.version, roaming=self.roaming)
 
-    @property
+    @path_property
     def site_config_dir(self):
         return site_config_dir(self.appname, self.appauthor,
                              version=self.version, multipath=self.multipath)
 
-    @property
+    @path_property
     def user_cache_dir(self):
         return user_cache_dir(self.appname, self.appauthor,
                               version=self.version)
 
-    @property
+    @path_property
     def user_state_dir(self):
         return user_state_dir(self.appname, self.appauthor,
                               version=self.version)
 
-    @property
+    @path_property
     def user_log_dir(self):
         return user_log_dir(self.appname, self.appauthor,
                             version=self.version)
