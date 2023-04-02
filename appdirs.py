@@ -318,6 +318,54 @@ def user_cache_dir(appname=None, appauthor=None, version=None, opinion=True):
     return path
 
 
+def site_state_dir(appname=None, appauthor=None, version=None):
+    r"""Return full path to the user-shared state dir for this application.
+
+        "appname" is the name of application.
+            If None, just the system directory is returned.
+        "appauthor" (only used on Windows) is the name of the
+            appauthor or distributing body for this application. Typically
+            it is the owning company name. This falls back to appname. You may
+            pass False to disable it.
+        "version" is an optional version path element to append to the
+            path. You might want to use this if you want multiple versions
+            of your app to be able to run independently. If used, this
+            would typically be "<major>.<minor>".
+            Only applied when appname is present.
+
+    Typical site data directories are:
+        Mac OS X:   /Library/Application Support/<AppName>/state
+        Unix:       /var/lib/<AppName>
+        Win XP:     C:\Documents and Settings\All Users\Application Data\<AppAuthor>\<AppName>\State
+        Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
+        Win 7:      C:\ProgramData\<AppAuthor>\<AppName>\State   # Hidden, but writeable on Win 7.
+
+    For Unix, this does not have an $XDG_STATE_DIR default
+
+    WARNING: Do not use this on Windows. See the Vista-Fail note above for why.
+    """
+    if system == "win32":
+        if appauthor is None:
+            appauthor = appname
+        path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))
+        if appname:
+            if appauthor is not False:
+                path = os.path.join(path, appauthor, appname, 'State')
+            else:
+                path = os.path.join(path, appname, 'State')
+    elif system == 'darwin':
+        path = os.path.expanduser('/Library/Application Support')
+        if appname:
+            path = os.path.join(path, appname, 'State')
+    else:
+        path = '/var/lib'
+        if appname:
+            path = os.path.join(path, appname)
+    if appname and version:
+        path = os.path.join(path, version)
+    return path
+
+
 def user_state_dir(appname=None, appauthor=None, version=None, roaming=False):
     r"""Return full path to the user-specific state dir for this application.
 
@@ -452,6 +500,11 @@ class AppDirs(object):
                               version=self.version)
 
     @property
+    def site_state_dir(self):
+        return site_state_dir(self.appname, self.appauthor,
+                              version=self.version)
+
+    @property
     def user_log_dir(self):
         return user_log_dir(self.appname, self.appauthor,
                             version=self.version)
@@ -578,7 +631,8 @@ if __name__ == "__main__":
              "user_state_dir",
              "user_log_dir",
              "site_data_dir",
-             "site_config_dir")
+             "site_config_dir",
+             "site_state_dir")
 
     print("-- app dirs %s --" % __version__)
 
