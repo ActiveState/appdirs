@@ -141,20 +141,20 @@ def site_data_dir(appname=None, appauthor=None, version=None, multipath=False):
         if appname:
             path = os.path.join(path, appname)
     else:
-        # XDG default for $XDG_DATA_DIRS
-        # only first, if multipath is False
-        path = os.getenv('XDG_DATA_DIRS',
-                         os.pathsep.join(['/usr/local/share', '/usr/share']))
-        pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
+        # XDG default: $XDG_DATA_DIRS for searching through multiple directories, 
+        # '/usr/local/share' for single application directory
+        # (for distribution independent files, also '/usr/share' could be used)
+        if multipath:
+            path = os.getenv('XDG_DATA_DIRS',
+                            os.pathsep.join(['/usr/local/share', '/usr/share']))
+            pathlist = [os.path.expanduser(x.rstrip(os.sep)) for x in path.split(os.pathsep)]
+        else:
+            pathlist = ['/usr/local/share']
         if appname:
             if version:
                 appname = os.path.join(appname, version)
             pathlist = [os.sep.join([x, appname]) for x in pathlist]
-
-        if multipath:
-            path = os.pathsep.join(pathlist)
-        else:
-            path = pathlist[0]
+        path = os.pathsep.join(pathlist)
         return path
 
     if appname and version:
