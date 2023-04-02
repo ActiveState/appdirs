@@ -18,6 +18,7 @@ __version_info__ = tuple(int(segment) for segment in __version__.split("."))
 
 import sys
 import os
+import re
 
 PY3 = sys.version_info[0] == 3
 
@@ -39,6 +40,32 @@ if sys.platform.startswith('java'):
 else:
     system = sys.platform
 
+
+def user_download_dir():
+    r"""Return full path to the user-specific download dir for this application.
+
+    Typical user data directories are:
+        Mac OS X:  ~/Downloads
+        Unix:      ~/Downloads    # or in $XDG_DOWNLOAD_DIR, if defined
+        Win 7:     C:\Users\<username>\Downloads
+
+    For Unix, we follow the XDG spec and support $XDG_DOWNLOAD_DIR.
+    That means, by default "~/Downloads".
+    """
+    if system == "win32":
+        return os.path.normpath(_get_win_download_folder_with_ctypes())
+    elif system == 'darwin':
+        return os.path.expanduser('~/Downloads')
+    else:
+        try:
+            config_dirs = os.path.join(user_config_dir(), 'user-dirs.dirs')
+            with open(config_dirs) as dirs_file:
+                path_match = re.search(r'XDG_DOWNLOAD_DIR=(.+)', dirs_file.read())
+                cleaned_path = path_match.group(1).replace('"', '').replace('$HOME', '~')
+                return os.path.expanduser(cleaned_path)
+        except Exception:
+            pass
+        return os.getenv('XDG_DOWNLOAD_DIR', os.path.expanduser("~/Downloads"))
 
 
 def user_data_dir(appname=None, appauthor=None, version=None, roaming=False):
@@ -422,6 +449,10 @@ class AppDirs(object):
         self.multipath = multipath
 
     @property
+    def user_download_dir(self):
+        return user_download_dir()
+
+    @property
     def user_data_dir(self):
         return user_data_dir(self.appname, self.appauthor,
                              version=self.version, roaming=self.roaming)
@@ -508,6 +539,43 @@ def _get_win_folder_with_ctypes(csidl_name):
             buf = buf2
 
     return buf.value
+
+
+def _get_win_download_folder_with_ctypes():
+    import ctypes
+    from ctypes import windll, wintypes
+    from uuid import UUID
+
+    class GUID(ctypes.Structure):
+        _fields_ = [
+            ("data1", wintypes.DWORD),
+            ("data2", wintypes.WORD),
+            ("data3", wintypes.WORD),
+            ("data4", wintypes.BYTE * 8)
+        ]
+
+        def __init__(self, uuidstr):
+            ctypes.Structure.__init__(self)
+            uuid = UUID(uuidstr)
+            self.data1, self.data2, self.data3, \
+                self.data4[0], self.data4[1], rest = uuid.fields
+            for i in range(2, 8):
+                self.data4[i] = rest >> (8-i-1)*8 & 0xff
+
+    SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
+    SHGetKnownFolderPath.argtypes = [
+        ctypes.POINTER(GUID), wintypes.DWORD, wintypes.HANDLE, ctypes.POINTER(ctypes.c_wchar_p)
+    ]
+
+    FOLDERID_Downloads = '{374DE290-123F-4565-9164-39C4925E467B}'
+    guid = GUID(FOLDERID_Downloads)
+    pathptr = ctypes.c_wchar_p()
+
+    if SHGetKnownFolderPath(ctypes.byref(guid), 0, 0, ctypes.byref(pathptr)):
+        raise Exception('Failed to get download directory.')
+
+    return pathptr.value
+
 
 def _get_win_folder_with_jna(csidl_name):
     import array
@@ -601,3 +669,6 @@ if __name__ == "__main__":
     dirs = AppDirs(appname, appauthor=False)
     for prop in props:
         print("%s: %s" % (prop, getattr(dirs, prop)))
+
+    print("\n-- download dir")
+    print(user_download_dir())

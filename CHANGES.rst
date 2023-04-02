@@ -5,6 +5,7 @@ UNRELEASED
 ----------
 - Add Python 3.7 support
 - Remove support for end-of-life Pythons 2.6, 3.2, and 3.3
+- Add ``user_download_dir()`` function to get user configured download directory.
 
 appdirs 1.4.4
 -------------
